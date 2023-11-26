@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 using Exchange.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Exchange.DAL;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -101,6 +102,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 
     ));
 
+//builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+  //  .AddEntityFrameworkStores<ApplicationDbContext>();
 
 var app = builder.Build();
 
@@ -111,6 +114,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//app.MapIdentityApi<ApplicationUser>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
