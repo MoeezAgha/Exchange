@@ -1,12 +1,17 @@
-﻿namespace Exchange.DAL.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Exchange.DAL.Models
 {
     //   [Table("Category", Schema = "Product")]
     public class Category : IAuditable
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         // Other category properties
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Product>? Products { get; set; }
 
         public string? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;

@@ -10,6 +10,10 @@ using Exchange.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Exchange.DAL;
+using Exchange.BAL.Services.Repositories;
+using Exchange.BAL.Services.Contracts;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -91,6 +95,35 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            };
        });
 #endregion
+
+
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
+        BearerFormat = "JWT",
+    });
+
+    // Add a new parameter named 'ApplicationID'
+    options.AddSecurityDefinition("applicationId", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "ApplicationID",
+        Type = SecuritySchemeType.ApiKey,
+        Description = "Application ID",
+        BearerFormat = "ApplicationID",
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
 
 builder.Services.AddControllers().AddJsonOptions(x =>

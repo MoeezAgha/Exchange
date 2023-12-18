@@ -1,13 +1,18 @@
-﻿namespace Exchange.DAL.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace Exchange.DAL.Models
 {
     // [Table("Tag", Schema = "Product")]
     public class Tag : IAuditable
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int TagId { get; set; }
         public string TagName { get; set; }
         // Other tag properties
 
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Product>? Products { get; set; }
 
         public string? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;

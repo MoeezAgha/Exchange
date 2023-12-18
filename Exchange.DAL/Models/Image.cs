@@ -1,8 +1,13 @@
-﻿namespace Exchange.DAL.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace Exchange.DAL.Models
 {
     // [Table("Image", Schema = "Product")]
     public class Image : IAuditable
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int ImageId { get; set; }
         public string ImageUrl { get; set; }
         // Other image properties

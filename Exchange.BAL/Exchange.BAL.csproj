@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\NewFolder\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
@@ -18,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Exchange.DAL\Exchange.DAL.csproj" />
+    <ProjectReference Include="..\Exchnage.Library\Exchnage.Library.csproj" />
   </ItemGroup>
 
 </Project>

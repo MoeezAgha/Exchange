@@ -1,43 +1,87 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using Exchange.BAL.Services.Contracts;
+using Exchange.DAL.Models;
+using Exchnage.Library.DataTransferObject;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Exchange.WebAPI.Controllers
 {
+    [Authorize(Roles = "aa")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
-        // GET: api/<ProductController>
+        private readonly IRepository<Product> _repository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ProductController(IRepository<Product> repository, IUnitOfWork unitOfWork)
+        {
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        }
+
+        // GET: api/Product
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<Product>>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var products = await _repository.GetAsync(c => c.IsPublic);
+            return Ok(products);
         }
 
-        // GET api/<ProductController>/5
+        // GET api/Product/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<Product>> Get(int id)
         {
-            return "value";
+            var product = await _repository.GetByIdAsync(id);
+            return product != null ? Ok(product) : NotFound();
         }
 
-        // POST api/<ProductController>
+        // POST api/Product
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<ProductDTO>> Post([FromBody] Product product)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid model state.");
+            }
+
+            await _repository.AddAsync(product);
+            await _unitOfWork.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(Get), new { id = product.ProductId }, product);
         }
 
-        // PUT api/<ProductController>/5
+        // PUT api/Product/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] Product product)
         {
+            if (id != product.ProductId)
+            {
+                return BadRequest("Invalid ID");
+            }
+
+            await _repository.UpdateAsync(product);
+            await _unitOfWork.SaveChangesAsync();
+
+            return NoContent();
         }
 
-        // DELETE api/<ProductController>/5
+        // DELETE api/Product/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var product = await _repository.GetByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            await _repository.DeleteAsync(product);
+            await _unitOfWork.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

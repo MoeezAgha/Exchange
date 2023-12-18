@@ -189,7 +189,7 @@ namespace Exchange.WebAPI.Controllers
                      new Claim(JwtRegisteredClaimNames.Sub,user?.Id.ToString()),
                      new Claim(JwtRegisteredClaimNames.UniqueName, user?.UserName),
                      new Claim(ClaimTypes.Email, user?.Email ?? ""),
-                     new Claim(ClaimTypes.Role, "MoeezKhanRole"),
+                     new Claim(ClaimTypes.Role, "aa"),
                      new Claim(ClaimTypes.Role, "MoeezKhanRole12"),
                      new Claim(ClaimTypes.Role, "MoeezKhanRole12345"),
               
@@ -199,7 +199,7 @@ namespace Exchange.WebAPI.Controllers
                 issuer: _jwtSetting.ValidIssuer,
                 audience: _jwtSetting.ValidAudience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(10), // Set token expiration time
+                expires: DateTime.UtcNow.AddMinutes(1000), // Set token expiration time
                 signingCredentials: creds
             );
 

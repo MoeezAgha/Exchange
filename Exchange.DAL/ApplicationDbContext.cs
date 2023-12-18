@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection.Emit;
 
 namespace Exchange.DAL
 {
@@ -27,12 +28,17 @@ namespace Exchange.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
             base.OnModelCreating(modelBuilder);
+
+         
+
 
             modelBuilder.Entity<ExchangeOffer>()
                 .HasOne(e => e.ExchangeOfferByUser)
                 .WithMany(u => u.SendExchangeOffers)
-                .HasForeignKey(e => e.UserId)
+                .HasForeignKey(e => e.ExchangeOfferByUserId)
                 .OnDelete(DeleteBehavior.NoAction); // Choose the appropriate cascade action
 
             modelBuilder.Entity<ExchangeOffer>()
@@ -152,4 +158,6 @@ namespace Exchange.DAL
             return "System";
         }
     }
+
+
 }
