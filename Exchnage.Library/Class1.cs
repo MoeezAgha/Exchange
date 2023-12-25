@@ -1,4 +1,4 @@
-﻿namespace Exchnage.Library
+﻿namespace Exchange.Library
 {
     public class Class1
     {

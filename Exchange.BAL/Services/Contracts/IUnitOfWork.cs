@@ -1,4 +1,5 @@
-﻿using Exchange.DAL;
+﻿using Exchange.BAL.Services.Repositories;
+using Exchange.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,16 @@ using System.Threading.Tasks;
 
 namespace Exchange.BAL.Services.Contracts
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork:IDisposable
     {
-        Task<int> SaveChangesAsync();
+         CategoryRepository Categories { get;  }
+         ExchangeOfferRepository ExchangeOffers { get;  }
+         ImageRepository Images { get;  }
+         ProductRepository Products { get;  }
+         ProductImageRepository ProductImages { get;  }
+         TagRepository Tags { get;  }
+         Task<int> SaveChangesAsync();
+     
     }
 
 }

@@ -1,5 +1,6 @@
 ﻿@page "/counter"
-@rendermode InteractiveServer
+
+@* @rendermode InteractiveServer *@
 
 <PageTitle>Counter</PageTitle>
 
@@ -9,6 +10,12 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+@foreach (var item in _categories)
+{
+    <h1>@item.CategoryId</h1>
+}
+
+
 @code {
     private int currentCount = 0;
 
@@ -16,4 +23,6 @@
     {
         currentCount++;
     }
+
+
 }

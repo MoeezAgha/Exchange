@@ -1,6 +1,6 @@
 ﻿using Exchange.BAL.Services.Contracts;
 using Exchange.DAL.Models;
-using Exchnage.Library.DataTransferObject;
+using Exchange.Library.DataTransferObject;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;

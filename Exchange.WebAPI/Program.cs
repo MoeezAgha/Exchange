@@ -43,14 +43,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>()
 
 
 
-#region Register-Custom-Services
-builder.Services.AddRegisterBusinessServices();
-
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-
-#endregion
-
 
 
 #region Adding-Authentication-Scheme
@@ -122,21 +114,29 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+//builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+//builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
 
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
     "Data Source=.;Initial Catalog=BarterApp;Integrated Security=True;Encrypt=False"
 
     ));
 
+
 //builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
-  //  .AddEntityFrameworkStores<ApplicationDbContext>();
+//  .AddEntityFrameworkStores<ApplicationDbContext>();
+#region Register-Custom-Services
+builder.Services.AddRegisterBusinessServices();
+
+//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+#endregion
+
 
 var app = builder.Build();
 

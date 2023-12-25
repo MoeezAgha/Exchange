@@ -1,4 +1,7 @@
-﻿using Exchange.BAL.Services.ResponseWrapperService;
+﻿using Exchange.BAL.Services.Repositories;
+using Exchange.BAL.Services.ResponseWrapperService;
+using Exchange.DAL.Models;
+using Exchange.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,4 +37,34 @@ namespace Exchange.BAL.Services.Contracts
 
 
 }
+    public interface ICategoryRepository : IRepository<Category>
+    {
+        // Additional methods specific to Category
+    }
+
+    public interface IExchangeOfferRepository : IRepository<ExchangeOffer>
+    {
+        // Additional methods specific to ExchangeOffer
+    }
+
+    public interface IImageRepository : IRepository<Image>
+    {
+        // Additional methods specific to Image
+    }
+
+    public interface IProductRepository : IRepository<Product>
+    {
+        // Additional methods specific to Product
+    }
+
+    public interface IProductImageRepository : IRepository<ProductImage>
+    {
+        // Additional methods specific to ProductImage
+    }
+
+    public interface ITagRepository : IRepository<Tag>
+    {
+        // Additional methods specific to Tag
+    }
+  
 }

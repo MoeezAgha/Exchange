@@ -1,6 +1,7 @@
 ﻿using Exchange.BAL.Services.Contracts;
 using Exchange.BAL.Services.ResponseWrapperService;
 using Exchange.DAL;
+using Exchange.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -54,4 +55,43 @@ namespace Exchange.BAL.Services.Repositories
         }
     }
 
+    public class CategoryRepository : Repository<Category>, ICategoryRepository
+    {
+        public CategoryRepository(ApplicationDbContext context) : base(context)
+        {
+        }
+
+    }
+    public class ExchangeOfferRepository : Repository<ExchangeOffer>,IExchangeOfferRepository
+    {
+        public ExchangeOfferRepository(ApplicationDbContext context) : base(context)
+        {
+        }
+
+    }
+    public class ImageRepository : Repository<Image>,IImageRepository
+    {
+        public ImageRepository(ApplicationDbContext context) : base(context)
+        {
+        }
+    }
+    public class TagRepository : Repository<Tag>,ITagRepository
+    {
+        public TagRepository(ApplicationDbContext context) : base(context)
+        {
+        }
+    }
+    public class ProductImageRepository : Repository<ProductImage>,IProductImageRepository
+    {
+        public ProductImageRepository(ApplicationDbContext context) : base(context)
+        {
+        }
+    }
+
+    public class ProductRepository : Repository<Product>,IProductRepository
+    {
+        public ProductRepository(ApplicationDbContext context) : base(context)
+        {
+        }
+    }
 }
