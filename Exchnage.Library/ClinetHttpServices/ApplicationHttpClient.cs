@@ -1,52 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
+using Exchnage.Library.Helper;
+
 
 namespace Exchnage.Library.ClinetHttpServices
 {
-    public class ApplicationHttpClient
+    public class ApplicationHttpClient(HttpClient httpClient) : IApplicationHttpClient
     {
-        private readonly HttpClient httpClient;
+        private readonly HttpClient httpClient = httpClient;
 
-        public ApplicationHttpClient(HttpClient httpClient)
+        public async Task<ApiResponse<TResponse>> GetJsonAsync<TResponse>(string relativeUrl)
         {
-            this.httpClient = httpClient;
+            try
+            {
+                var response = await httpClient.GetAsync(relativeUrl);
+                response.EnsureSuccessStatusCode();
+                var data = await response.Content.ReadFromJsonAsync<TResponse>();
+                return new ApiResponse<TResponse> { Success = true, Data = data, statusCode = response.StatusCode };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<TResponse> { Success = false, Message = ex.Message };
+            }
         }
-
-        public async Task<TResponse> GetJsonAsync<TResponse>(string relativeUrl)
+        public async Task<ApiResponse<TResponse>> Get<TResponse>(string relativeUrl)
         {
             var response = await httpClient.GetAsync(relativeUrl);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<TResponse>();
+            var data = await response.Content.ReadFromJsonAsync<TResponse>();
+            return new ApiResponse<TResponse> { Success = true, Data = data };
         }
 
-        public async Task<string> Get<TResponse>(string relativeUrl)
-        {
-            var response = await httpClient.GetAsync(relativeUrl);
 
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
-        }
 
-        public void AddAuthorizationHeader(string jwtToken)
+        public async Task<ApiResponse<TResponse>> PostJsonAsync<TRequest, TResponse>(string relativeUrl, TRequest request)
         {
-            // Get the JWT token from your authentication flow
-            // Obtain the JWT token from your authentication flow
+            try
+            {
 
-            // Add the token to the request headers
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
-        }
-        public async Task<TResponse> PostJsonAsync<TRequest, TResponse>(string relativeUrl, TRequest request)
-        {
-            var response = await httpClient.PostAsJsonAsync(relativeUrl, request);
-            // var z =response.Content.ReadAsStringAsync();
-            response.EnsureSuccessStatusCode();
-            //  var z = await response.Content.ReadFromJsonAsync<TResponse>();
-            return await response.Content.ReadFromJsonAsync<TResponse>();
+                var response = await httpClient.PostAsJsonAsync(relativeUrl, request);
+                // var z =response.Content.ReadAsStringAsync();
+                response.EnsureSuccessStatusCode();
+                //  var z = await response.Content.ReadFromJsonAsync<TResponse>();
+
+                return new ApiResponse<TResponse> { Success = true, Data = await response.Content.ReadFromJsonAsync<TResponse>(), statusCode = response.StatusCode };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<TResponse> { Success = false, Message = ex.Message };
+            }
         }
 
         public async Task<TResponse> PutJsonAsync<TRequest, TResponse>(string relativeUrl, TRequest request)
@@ -60,6 +62,14 @@ namespace Exchnage.Library.ClinetHttpServices
         {
             var response = await httpClient.DeleteAsync(relativeUrl);
             response.EnsureSuccessStatusCode();
+        }
+
+
+
+        public void AddAuthorizationHeader(string jwtToken)
+        {
+            // Add the token to the request headers
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
         }
     }
 }

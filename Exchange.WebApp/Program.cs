@@ -12,11 +12,11 @@ builder.Services.AddRazorComponents()
 
 //JSON serialization options for System.Text.Json
 var jsonSerializerOptions = new JsonSerializerOptions
-                            {
-                                //PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                                PropertyNameCaseInsensitive = true
-                               
-                            };
+{
+    //PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    PropertyNameCaseInsensitive = true
+
+};
 
 // Correct way to add named HttpClient
 //builder.Services.AddHttpClient("ApplicationAPI", client =>

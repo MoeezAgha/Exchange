@@ -5,6 +5,7 @@ using Exchange.Library.DataTransferObject;
 using Exchange.Library.Helper;
 using Exchnage.Library.ClinetHttpServices;
 using Microsoft.AspNetCore.Components;
+using System.Net;
 using System.Text.Json;
 using static System.Net.WebRequestMethods;
 
@@ -31,25 +32,14 @@ namespace Exchange.WebApp.Components.Pages
         {
             var response = await HttpClient.GetJsonAsync<List<CategoryDTO>>("Category");
 
-            if (true)
+            if (response.statusCode == HttpStatusCode.OK)
             {
-                //try
-                //{
-                //    var responseContent = await response.Content.ReadAsStringAsync();
-                //    response.EnsureSuccessStatusCode();
-                //    var zz = JsonSerializer.Deserialize<List<object>>(responseContent); // Assign the deserialized data to the _categories variable
-                //}
-                //catch (JsonException ex)
-                //{
-                   
-                //}
-            
+                _categories = response.Data;
+
+
             }
-            else
-            {
-                // Handle the error...
-            }
-            // Handle the response...
+            this.StateHasChanged();
+        
         }
     }
 }
