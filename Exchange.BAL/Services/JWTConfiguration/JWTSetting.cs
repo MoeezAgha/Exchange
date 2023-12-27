@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Exchange.BAL.Services.AppConfiguration
+namespace Exchange.BAL.Services.JWTConfiguration
+
 {
     public class JwtSetting
     {

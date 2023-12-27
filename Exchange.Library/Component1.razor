@@ -1,0 +1,25 @@
+﻿@using Exchange.Library.DataTransferObject
+@using Exchnage.Library.ClinetHttpServices
+@using System.Net
+<h3>Component1  asdasdasdasd</h3>
+
+
+
+@{if (_categories != null)
+{
+foreach (var item in _categories)
+{
+    <p>@item.CategoryName</p>
+
+}}
+else
+    {
+        <h1>loading </h1>
+    }  
+}
+
+
+@code {
+
+    
+}

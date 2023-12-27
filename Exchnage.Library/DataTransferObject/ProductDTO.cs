@@ -12,7 +12,7 @@ namespace Exchange.Library.DataTransferObject
     {
     }
     [JsonSerializable(typeof(CategoryDTO))]
-    public class CategoryDTO 
+    public class CategoryDTO
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
@@ -28,7 +28,7 @@ namespace Exchange.Library.DataTransferObject
     {
     }
     public class ImageDTO : Image
-    { 
+    {
     }
     public class TagDTO : Tag
     {

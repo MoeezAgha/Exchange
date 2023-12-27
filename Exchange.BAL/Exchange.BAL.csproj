@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Exchange.DAL\Exchange.DAL.csproj" />
     <ProjectReference Include="..\Exchnage.Library\Exchnage.Library.csproj" />
+
   </ItemGroup>
 
 </Project>

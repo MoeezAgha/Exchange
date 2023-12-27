@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Exchnage.Library.ClinetHttpServices;
+using Microsoft.Extensions.Logging;
 
 namespace Exchange.Mobile
 {
@@ -16,8 +17,22 @@ namespace Exchange.Mobile
 
             builder.Services.AddMauiBlazorWebView();
 
+
+
+              var BaseAddress =
+    DeviceInfo.Platform == DevicePlatform.Android ? "https://90j8m7ws-7271.use.devtunnels.ms" : "http://localhost:7271";
+         var APIUrl = $"{BaseAddress}/api/";
+
+
+            builder.Services.AddHttpClient();
+
+            builder.Services.AddHttpClient<ApplicationHttpClient>(client =>
+            {
+                client.BaseAddress = new Uri(APIUrl);
+            });
+            builder.Services.AddBlazorWebViewDeveloperTools();
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
 

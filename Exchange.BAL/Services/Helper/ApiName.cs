@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Exchange.Library.Helper
 {
-
+ 
     public static class ApiName
     {
         public const string ApplicationAPI = "ApplicationAPI";

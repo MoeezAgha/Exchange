@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+
 using Exchange.DAL.Models;
 using Exchange.Library.DataTransferObject;
 using System;
