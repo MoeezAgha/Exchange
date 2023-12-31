@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Exchange.BAL\Exchange.BAL.csproj" />
-    <ProjectReference Include="..\Exchange.Library\Exchange.Library.csproj" />
+    <ProjectReference Include="..\Exchange.Library\Exchange.UI.Library.csproj" />
   </ItemGroup>
 
 </Project>

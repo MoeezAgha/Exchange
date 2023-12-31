@@ -1,7 +1,4 @@
-﻿
-using Exchnage.Library.Helper;
-
-namespace Exchnage.Library.ClinetHttpServices
+﻿namespace Exchnage.Library.ClinetHttpServices
 {
     public interface IApplicationHttpClient
     {

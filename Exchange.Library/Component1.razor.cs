@@ -8,7 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Exchange.Library
+namespace Exchange.UI.Library
 {
 
     public partial class Component1 : ComponentBase
@@ -20,37 +20,37 @@ namespace Exchange.Library
 
 
         [Inject]
-        public  HttpClient _httpClient { get; set; } = default;
+        public HttpClient _httpClient { get; set; } = default;
 
 
         protected override void OnInitialized()
-    {
-        // _api1Client = ClientFactory.CreateClient(ApiName.ApplicationAPI);
-    }
+        {
+            // _api1Client = ClientFactory.CreateClient(ApiName.ApplicationAPI);
+        }
 
-    public List<CategoryDTO> _categories = new List<CategoryDTO>(); // Initialize the list
+        public List<CategoryDTO> _categories = new List<CategoryDTO>(); // Initialize the list
 
-    protected override async Task OnInitializedAsync()
-    {
+        protected override async Task OnInitializedAsync()
+        {
             try
             {
 
-        var response = await HttpClient.GetJsonAsync<List<CategoryDTO>>("Category");
+                var response = await HttpClient.GetJsonAsync<List<CategoryDTO>>("Category");
 
-        if (response.statusCode == HttpStatusCode.OK)
-        {
-            _categories = response.Data;
+                if (response.statusCode == HttpStatusCode.OK)
+                {
+                    _categories = response.Data;
 
 
-        }
+                }
             }
             catch (Exception e)
             {
 
                 throw;
             }
-            this.StateHasChanged();
+            StateHasChanged();
 
-    }
+        }
     }
 }

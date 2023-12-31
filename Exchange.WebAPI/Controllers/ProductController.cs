@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace Exchange.WebAPI.Controllers
 {
-    [Authorize(Roles = "aa")]
+    //  [Authorize(Roles = "aa")]
+   // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase

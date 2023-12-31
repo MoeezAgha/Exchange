@@ -9,7 +9,7 @@ namespace Exchange.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+ //   [Authorize]
     public class TagController : ControllerBase
     {
         private readonly IRepository<Tag> _repository;
@@ -22,9 +22,13 @@ namespace Exchange.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tag>>> Get()
+        public async Task<ActionResult<IEnumerable<Tag>>> Get([FromQuery] bool includeProducts = false)
         {
-            var tags = await _repository.GetAllAsync();
+              var tags = includeProducts 
+        ? await _repository.GetAllIncludingAsync(c=>c.Products , p=> p.Products)
+        : await _repository.GetAllAsync();
+
+
             return Ok(tags);
         }
 

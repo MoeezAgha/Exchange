@@ -37,11 +37,12 @@ builder.Services.AddHealthChecks();
 #endregion
 
 
+#region Identity and User setting with third-party 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-
+#endregion
 
 
 
@@ -89,7 +90,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 #endregion
 
 
-
+#region Swagger Header for Authorization 
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -114,17 +115,20 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
+#endregion
 //builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 //builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
+#region Json setting
 
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+#endregion
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
-    "Data Source=.;Initial Catalog=BarterApp;Integrated Security=True;Encrypt=False"
-
-    ));
+#region ConnectionString
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BarterAppConnectionString")));
+#endregion 
 
 
 //builder.Services.AddIdentityApiEndpoints<ApplicationUser>()

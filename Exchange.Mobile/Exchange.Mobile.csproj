@@ -71,7 +71,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Exchange.Library\Exchange.Library.csproj" />
+      <ProjectReference Include="..\Exchange.Library\Exchange.UI.Library.csproj" />
     </ItemGroup>
 
 </Project>

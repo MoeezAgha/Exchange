@@ -9,7 +9,7 @@ namespace Exchange.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class ExchangeOfferController : ControllerBase
     {
         private readonly IRepository<ExchangeOffer> _repository;

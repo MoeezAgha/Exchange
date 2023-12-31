@@ -1,7 +1,6 @@
 ﻿using Exchange.BAL.Services.Contracts;
 using Exchange.BAL.Services.ResponseWrapperService;
 using Exchange.DAL;
-using Exchange.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -28,6 +27,7 @@ namespace Exchange.BAL.Services.Repositories
             return await _dbSet.ToListAsync();
         }
 
+
         public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return await _dbSet.Where(predicate).ToListAsync();
@@ -53,45 +53,21 @@ namespace Exchange.BAL.Services.Repositories
         {
             _dbSet.Remove(entity);
         }
-    }
 
-    public class CategoryRepository : Repository<Category>, ICategoryRepository
-    {
-        public CategoryRepository(ApplicationDbContext context) : base(context)
+        public async Task<IQueryable<TEntity>> GetAllIncludingAsync(params Expression<Func<TEntity, object>>[] includeProperties)
         {
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+
+            if (includeProperties != null)
+            {
+                foreach (var includeProperty in includeProperties)
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            return query;
         }
 
-    }
-    public class ExchangeOfferRepository : Repository<ExchangeOffer>,IExchangeOfferRepository
-    {
-        public ExchangeOfferRepository(ApplicationDbContext context) : base(context)
-        {
-        }
-
-    }
-    public class ImageRepository : Repository<Image>,IImageRepository
-    {
-        public ImageRepository(ApplicationDbContext context) : base(context)
-        {
-        }
-    }
-    public class TagRepository : Repository<Tag>,ITagRepository
-    {
-        public TagRepository(ApplicationDbContext context) : base(context)
-        {
-        }
-    }
-    public class ProductImageRepository : Repository<ProductImage>,IProductImageRepository
-    {
-        public ProductImageRepository(ApplicationDbContext context) : base(context)
-        {
-        }
-    }
-
-    public class ProductRepository : Repository<Product>,IProductRepository
-    {
-        public ProductRepository(ApplicationDbContext context) : base(context)
-        {
-        }
     }
 }

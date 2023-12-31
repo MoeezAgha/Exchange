@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exchange.WebApp", "Exchange
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{DE6D83CA-CAB1-4699-8FE1-F687559F4A93}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exchange.Library", "Exchange.Library\Exchange.Library.csproj", "{146603FF-0159-4B6F-A93A-3AE54221CFEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exchange.UI.Library", "Exchange.Library\Exchange.UI.Library.csproj", "{146603FF-0159-4B6F-A93A-3AE54221CFEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

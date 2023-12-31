@@ -3,12 +3,14 @@ using Exchange.BAL.Services.Repositories;
 
 using Exchange.DAL.Models;
 using Exchange.Library.DataTransferObject;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Exchange.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+   // [Authorize]
     public class CategoryController(IUnitOfWork unitOfWork, IServiceProvider serviceProvider, AutoMapper.IMapper mapper) : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -23,35 +25,35 @@ namespace Exchange.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> Get(int id)
+        public async Task<ActionResult<CategoryDTO>> Get(int id)
         {
             var category = await _unitOfWork.Categories.GetByIdAsync(id);
             return category != null ? Ok(category) : NotFound();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Category>> Post([FromBody] Category category)
+        public async Task<ActionResult<CategoryDTO>> Post([FromBody] CategoryDTO category)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid model state.");
             }
-
-            await _unitOfWork.Categories.AddAsync(category);
+         
+            await _unitOfWork.Categories.AddAsync(_mapper.Map<Category>(category));
             await _unitOfWork.SaveChangesAsync();
 
             return CreatedAtAction(nameof(Get), new { id = category.CategoryId }, category);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Category category)
+        public async Task<IActionResult> Put(int id, [FromBody] CategoryDTO category)
         {
             if (id != category.CategoryId)
             {
                 return BadRequest("Invalid ID");
             }
 
-            await _unitOfWork.Categories.UpdateAsync(category);
+            await _unitOfWork.Categories.UpdateAsync(_mapper.Map<Category>(category));
             await _unitOfWork.SaveChangesAsync();
 
             return NoContent();
