@@ -1,4 +1,6 @@
-﻿using Exchange.DAL.Models;
+﻿using Exchange.BAL.Services.JWTConfiguration;
+using Exchange.DAL.Models;
+using Exchnage.Library.DataTransferObject.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -52,7 +54,7 @@ namespace Exchange.WebAPI.Controllers
         [Route("api/users")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO createUserDTO)
         {
-            var user = new ApplicationUser { UserName = createUserDTO.Username };
+            var user = new ApplicationUser { UserName = createUserDTO.Username.Split('@').FirstOrDefault(), Email = createUserDTO.Username };
 
             var result = await _userManager.CreateAsync(user, createUserDTO.Password);
             if (result.Succeeded)
@@ -105,8 +107,8 @@ namespace Exchange.WebAPI.Controllers
 
                 var users = await _userManager.Users.ToListAsync();
 
-                var z = users;
-                var user = await _userManager.FindByNameAsync(model.UserName);
+
+                var user = await _userManager.FindByEmailAsync(model.UserName);
 
                 if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
                 {
@@ -194,14 +196,14 @@ namespace Exchange.WebAPI.Controllers
                      new Claim(ClaimTypes.Role, "aa"),
                      new Claim(ClaimTypes.Role, "MoeezKhanRole12"),
                      new Claim(ClaimTypes.Role, "MoeezKhanRole12345"),
-              
+
             };
 
             var token = new JwtSecurityToken(
                 issuer: _jwtSetting.ValidIssuer,
                 audience: _jwtSetting.ValidAudience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(1000), // Set token expiration time
+                expires: DateTime.UtcNow.AddYears(1000), // Set token expiration time
                 signingCredentials: creds
             );
 
@@ -218,29 +220,4 @@ namespace Exchange.WebAPI.Controllers
         }
     }
 
-}
-
-public class LoginViewModel
-{
-    public string UserName { get; set; }
-
-    public string Password { get; set; }
-}
-
-public class UpdateUserDTO
-{
-    public string Username { get; set; }
-}
-public class JwtSetting
-{
-
-    public string ValidIssuer { get; set; }
-    public string ValidAudience { get; set; }
-    public string IssuerSigningKey { get; set; }
-
-}
-public class CreateUserDTO
-{
-    public string Username { get; set; }
-    public string Password { get; set; }
 }

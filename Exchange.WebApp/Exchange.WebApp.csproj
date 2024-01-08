@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="6.11.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Exchange.BAL\Exchange.BAL.csproj" />
     <ProjectReference Include="..\Exchange.Library\Exchange.UI.Library.csproj" />
   </ItemGroup>

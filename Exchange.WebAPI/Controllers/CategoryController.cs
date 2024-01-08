@@ -5,24 +5,34 @@ using Exchange.DAL.Models;
 using Exchange.Library.DataTransferObject;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Core.Types;
 
 namespace Exchange.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize]
+ //   [Authorize]
     public class CategoryController(IUnitOfWork unitOfWork, IServiceProvider serviceProvider, AutoMapper.IMapper mapper) : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         private readonly IServiceProvider _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         private readonly AutoMapper.IMapper _mapper = mapper;
 
+  
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> Get()
+        public async Task<ActionResult<IEnumerable<ExchangeOffer>>> Get([FromQuery] bool includeProducts = false)
         {
-            var categories = await _unitOfWork.Categories.GetAsync(c=>c.IsPublic);
-            return Ok(_mapper.Map<IEnumerable<CategoryDTO>>(categories));
+ 
+           
+            var exchangeOffers = includeProducts
+              ? await _unitOfWork.Categories.GetAllIncludingAsync(c => c.Products)
+              : await _unitOfWork.Categories.GetAllAsync();
+
+
+            return Ok(exchangeOffers);
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryDTO>> Get(int id)
@@ -67,8 +77,8 @@ namespace Exchange.WebAPI.Controllers
             {
                 return NotFound();
             }
-
-            await _unitOfWork.Categories.DeleteAsync(category);
+            category.IsPublic = false;
+            await _unitOfWork.Categories.UpdateAsync(category);
             await _unitOfWork.SaveChangesAsync();
 
             return NoContent();

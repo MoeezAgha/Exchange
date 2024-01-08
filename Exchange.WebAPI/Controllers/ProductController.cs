@@ -24,21 +24,17 @@ namespace Exchange.WebAPI.Controllers
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
-        // GET: api/Product
+  
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> Get()
+        public async Task<ActionResult<IEnumerable<Product>>> Get([FromQuery] bool includeProducts = false)
         {
-            var products = await _repository.GetAsync(c => c.IsPublic);
-            return Ok(products);
+            var product = includeProducts
+              ? await _repository.GetAllIncludingAsync(tag => tag.Tags, Category => Category.Categories , Exchange => Exchange.ExchangeOffers)
+              : await _repository.GetAllAsync();
+            return Ok(product);
         }
 
-        // GET api/Product/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> Get(int id)
-        {
-            var product = await _repository.GetByIdAsync(id);
-            return product != null ? Ok(product) : NotFound();
-        }
+   
 
         // POST api/Product
         [HttpPost]
@@ -79,6 +75,7 @@ namespace Exchange.WebAPI.Controllers
             {
                 return NotFound();
             }
+            product.IsPublic = false;
 
             await _repository.DeleteAsync(product);
             await _unitOfWork.SaveChangesAsync();

@@ -2,7 +2,10 @@ using Exchange.BAL.Services;
 using Exchange.Library.Helper;
 using Exchange.WebApp.Components;
 using Exchnage.Library.ClinetHttpServices;
+using MudBlazor.Services;
 using System.Text.Json;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddRegisterBusinessServices();
@@ -10,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddMudServices();
 //JSON serialization options for System.Text.Json
 var jsonSerializerOptions = new JsonSerializerOptions
 {
@@ -40,6 +44,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 
 
 app.UseHttpsRedirection();

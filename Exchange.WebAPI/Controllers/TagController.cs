@@ -25,8 +25,8 @@ namespace Exchange.WebAPI.Controllers
         public async Task<ActionResult<IEnumerable<Tag>>> Get([FromQuery] bool includeProducts = false)
         {
               var tags = includeProducts 
-        ? await _repository.GetAllIncludingAsync(c=>c.Products , p=> p.Products)
-        : await _repository.GetAllAsync();
+                ? await _repository.GetAllIncludingAsync(c=>c.Products)
+                : await _repository.GetAllAsync();
 
 
             return Ok(tags);
@@ -75,7 +75,7 @@ namespace Exchange.WebAPI.Controllers
             {
                 return NotFound();
             }
-
+            tag.IsPublic = false;
             await _repository.DeleteAsync(tag);
             await _unitOfWork.SaveChangesAsync();
 

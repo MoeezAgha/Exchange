@@ -21,7 +21,7 @@ namespace Exchange.BAL.Services.Contracts
         Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate);
 
         // Get an entity by its identifier
-        Task<TEntity> GetByIdAsync(object id);
+        Task<TEntity> GetByIdAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties);
 
         // Add a new entity
         Task AddAsync(TEntity entity);

@@ -9,9 +9,12 @@ namespace Exchange.DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int CategoryId { get; set; }
+        [StringLength(30)]
+
         public string CategoryName { get; set; }
         // Other category properties
         public ICollection<Product>? Products { get; set; }
+        //public string? ImageUrl { get; set; }
 
         public string? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;

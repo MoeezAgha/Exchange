@@ -33,8 +33,16 @@ namespace Exchange.BAL.Services.Repositories
             return await _dbSet.Where(predicate).ToListAsync();
         }
 
-        public async Task<TEntity> GetByIdAsync(object id)
-        {
+        public async Task<TEntity> GetByIdAsync(int id , params Expression<Func<TEntity, object>>[] includeProperties )       {
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+
+            if (includeProperties != null)
+            {
+                foreach (var includeProperty in includeProperties)
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
             return await _dbSet.FindAsync(id);
         }
 

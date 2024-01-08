@@ -20,14 +20,18 @@ namespace Exchange.WebAPI.Controllers
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
-
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ExchangeOffer>>> Get()
+        public async Task<ActionResult<IEnumerable<ExchangeOffer>>> Get([FromQuery] bool includeProducts = false)
         {
-            var exchangeOffers = await _repository.GetAllAsync();
+            var exchangeOffers = includeProducts
+              ? await _repository.GetAllIncludingAsync(c => c.ExchangeOfferByUser)
+              : await _repository.GetAllAsync();
+
+
             return Ok(exchangeOffers);
         }
 
+    
         [HttpGet("{id}")]
         public async Task<ActionResult<ExchangeOffer>> Get(int id)
         {
@@ -71,7 +75,7 @@ namespace Exchange.WebAPI.Controllers
             {
                 return NotFound();
             }
-
+            exchangeOffer.IsPublic = false;
             await _repository.DeleteAsync(exchangeOffer);
             await _unitOfWork.SaveChangesAsync();
 

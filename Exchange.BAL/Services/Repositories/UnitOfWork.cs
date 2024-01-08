@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Exchange.BAL.Services.Repositories
 {
@@ -17,6 +18,7 @@ namespace Exchange.BAL.Services.Repositories
     {
         public ApplicationDbContext _context { get; set; }
         private readonly IHttpContextAccessor _httpContextAccessor;
+
 
         public UnitOfWork(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
@@ -28,6 +30,7 @@ namespace Exchange.BAL.Services.Repositories
             ProductImages = new ProductImageRepository(_context);
             Tags = new TagRepository(_context);
             _httpContextAccessor = httpContextAccessor;
+       
         }
 
         public CategoryRepository Categories { get; set; }
@@ -65,7 +68,8 @@ namespace Exchange.BAL.Services.Repositories
         }
         private string GetCurrentUserId()
         {
-            return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "System";
+
+            return _httpContextAccessor.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.UniqueName)?.Value ?? "System";
         }
         public void Dispose()
         {

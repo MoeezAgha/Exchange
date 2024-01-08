@@ -26,6 +26,11 @@ namespace Exchange.DAL
         {
         }
 
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=Barter;Integrated Security=True;Encrypt=False");
+        //    base.OnConfiguring(optionsBuilder);
+        //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

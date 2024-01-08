@@ -9,6 +9,8 @@ namespace Exchange.DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int TagId { get; set; }
+        [StringLength(30)]
+
         public string TagName { get; set; }
         // Other tag properties
 

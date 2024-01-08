@@ -14,6 +14,7 @@ using Exchange.BAL.Services.Repositories;
 using Exchange.BAL.Services.Contracts;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Exchange.BAL.Services.JWTConfiguration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
