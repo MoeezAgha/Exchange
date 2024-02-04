@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace Exchange.UI.Library.Pages.Admin.TagArea
 {
-    public partial class TagComponet : BarterBaseComponet<TagComponet>
+
+    public partial class TagComponent : BarterBaseComponet<TagComponent>
     {
         //override OnInitialized
 

@@ -1,0 +1,18 @@
+﻿@page "/categories/create"
+@using Exchange.UI.Library.Helper.BaseComponets
+@using Microsoft.AspNetCore.Components.Forms
+@using MudBlazor
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@rendermode InteractiveServer
+@inherits BarterBaseComponet<CategoryCreate>
+
+<h3>CategoryCreate</h3>
+
+<MudForm @ref="@form" Model="@model" FormName="CategoryCreateForm">
+
+   
+    <MudTextField T="int" Label="Category Name" @bind-Value="model.CategoryId" ReadOnly="true" Required="true" MaxLength="30" FullWidth />
+    <MudTextField T="string" Label="Category Name" @bind-Value="model.CategoryName" Required="true" MaxLength="30" FullWidth />
+
+     <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@HandleSubmit">Order</MudButton>
+ </MudForm>

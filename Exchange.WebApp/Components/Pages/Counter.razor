@@ -1,8 +1,10 @@
 ﻿@page "/counter"
+@using Exchange.UI.Library.Pages.Admin.TagArea
 
 @inherits BarterBaseComponet<Counter>
 @* @rendermode InteractiveServer *@
 @rendermode InteractiveServer
+
 <PageTitle>Counter</PageTitle>
 <MudAlert Severity="Severity.Normal">The reactor type is RBMK-1000</MudAlert>
 <MudAlert Severity="Severity.Info">The reactor was fired up successfully</MudAlert>
@@ -16,12 +18,8 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
-@foreach (var item in _categories)
-{
-    <h1>@item.CategoryName</h1>
-}
 
-<TagComponet></TagComponet>
+<TagComponent></TagComponent>
 @code {
     private int currentCount = 0;
 

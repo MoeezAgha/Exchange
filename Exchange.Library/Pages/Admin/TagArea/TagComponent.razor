@@ -1,13 +1,16 @@
-﻿
-@page "/tagIndex"
+﻿@page "/tags"
 
 @using Exchange.UI.Library.Helper.BaseComponets
+@using Microsoft.VisualBasic
 @using MudBlazor
-<h3>Tag</h3>
-@inherits BarterBaseComponet<TagComponet>
-@* @rendermode InteractiveServer *@
 
-<MudDataGrid Items="@_tagDTO" Filterable="false" SortMode="@SortMode.None" Groupable="false">
+
+
+<h3>Tag</h3>
+@inherits BarterBaseComponet<TagComponent>
+
+<MudDataGrid Items="@_tagDTO" Filterable="false" SortMode="@SortMode.Multiple" Groupable="false">
+
     <Columns>
         <PropertyColumn Property="x => x.TagName" Title="Tag Name" />
         <PropertyColumn Property="x => x.CreatedBy" Title="Created By" />
@@ -16,8 +19,7 @@
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
                 <MudStack Row>
-             
-                    <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Hire</MudButton>
+                    <a href="/" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</a>
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>

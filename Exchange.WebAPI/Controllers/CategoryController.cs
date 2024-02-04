@@ -44,15 +44,26 @@ namespace Exchange.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<CategoryDTO>> Post([FromBody] CategoryDTO category)
         {
+            try
+            {
+
+          
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid model state.");
             }
-         
-            await _unitOfWork.Categories.AddAsync(_mapper.Map<Category>(category));
+                var categoryModel = _mapper.Map<Category>(category);
+            var zs=    await _unitOfWork.Categories.GetAllAsync();
+                await _unitOfWork.Categories.AddAsync(categoryModel);
             await _unitOfWork.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = category.CategoryId }, category);
+            return CreatedAtAction(nameof(Get), new { id = categoryModel.CategoryId }, categoryModel);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
 
         [HttpPut("{id}")]

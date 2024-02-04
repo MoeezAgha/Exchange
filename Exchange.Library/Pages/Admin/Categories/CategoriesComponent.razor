@@ -1,0 +1,28 @@
+﻿@page "/categories"
+@using Exchange.UI.Library.Helper.BaseComponets
+@using MudBlazor
+@inherits BarterBaseComponet<CategoriesComponent>
+<h3>List of Categories</h3>
+<MudLink Href="/categories/create">Create a category</MudLink>
+<MudDataGrid Bordered="true" Dense="true" Items="@_categoryDTO" Filterable="true" EditTrigger="@(true ? DataGridEditTrigger.OnRowClick : DataGridEditTrigger.Manual)" EditMode="@(DataGridEditMode.Form)" SortMode="@SortMode.Multiple" Groupable="false">
+    <Columns>
+        <PropertyColumn Property="x => x.CategoryName" Title="Category Name" />
+        <PropertyColumn Property="x => x.CreatedBy" Title="Created By" />
+        <PropertyColumn Property="x => x.ModifiedBy" Title="Modified By" />
+        <PropertyColumn Property="x => x.IsPublic" Title="IsPublic" />
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudStack Row>
+                    <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Hidden="@(true)" CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+

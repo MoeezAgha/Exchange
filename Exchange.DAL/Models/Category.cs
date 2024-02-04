@@ -22,4 +22,9 @@ namespace Exchange.DAL.Models
         public DateTime ModifiedDate { get; set; } = DateTime.Now;
         public bool IsPublic { get; set; }
     }
+
+    public class ss {
+        public string CategoryName { get; set; }
+
+    }
 }
