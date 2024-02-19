@@ -2,6 +2,8 @@
 @using Exchange.UI.Library.Helper.BaseComponets
 @using MudBlazor
 @inherits BarterBaseComponet<CategoriesComponent>
+
+    <RadzenButton Text="Hi"></RadzenButton>
 <h3>List of Categories</h3>
 <MudLink Href="/categories/create">Create a category</MudLink>
 <MudDataGrid Bordered="true" Dense="true" Items="@_categoryDTO" Filterable="true" EditTrigger="@(true ? DataGridEditTrigger.OnRowClick : DataGridEditTrigger.Manual)" EditMode="@(DataGridEditMode.Form)" SortMode="@SortMode.Multiple" Groupable="false">

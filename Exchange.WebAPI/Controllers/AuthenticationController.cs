@@ -4,9 +4,11 @@ using Exchnage.Library.DataTransferObject.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Packaging;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -59,6 +61,7 @@ namespace Exchange.WebAPI.Controllers
             var result = await _userManager.CreateAsync(user, createUserDTO.Password);
             if (result.Succeeded)
             {
+                _userManager.AddToRoleAsync(user, "User").Wait();
                 return Ok("User created successfully.");
             }
 
@@ -96,24 +99,19 @@ namespace Exchange.WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                //var user2 = new ApplicationUser { UserName = "yahooo" };
-                //var password = "1234567890AsD@";
-
-                //var result = await _userManager.CreateAsync(user2, password);
-                //if (result.Succeeded)
-                //{
-                //    // User created successfully
-                //}
-
-                var users = await _userManager.Users.ToListAsync();
-
-
                 var user = await _userManager.FindByEmailAsync(model.UserName);
 
                 if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
                 {
-                    var r = await GenerateJwtToken(user);
-                    return Ok(new { Result = r });
+                    // Get claims
+                    var claims = await _userManager.GetClaimsAsync(user);
+
+                    // Get roles for the user
+                    var roles = await _userManager.GetRolesAsync(user);
+
+
+                    var writeToken = await GenerateJwtToken(user, roles,claims);
+                    return Ok(new { Result = writeToken });
                 }
 
                 return Unauthorized();
@@ -179,25 +177,29 @@ namespace Exchange.WebAPI.Controllers
         /// <param name="user">The ApplicationUser for which to generate the token.</param>
         /// <returns>A string representing the generated JWT token.</returns>
 
-        private async Task<string> GenerateJwtToken(ApplicationUser user)
+        private async Task<string> GenerateJwtToken(ApplicationUser user, IList<string> roles, IList<Claim> claims)
         {
-
-
-
+            
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.IssuerSigningKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
+            var UserClaims = new[]
             {
                      new Claim(JwtRegisteredClaimNames.Sub,user?.Id.ToString()),
                      new Claim(JwtRegisteredClaimNames.UniqueName, user?.UserName),
-                     new Claim(ClaimTypes.Email, user?.Email ?? ""),
-                     new Claim(ClaimTypes.Role, "aa"),
-                     new Claim(ClaimTypes.Role, "MoeezKhanRole12"),
-                     new Claim(ClaimTypes.Role, "MoeezKhanRole12345"),
+                     new Claim(ClaimTypes.Email, user?.Email ?? "")
 
             };
+            UserClaims.AddRange(claims);
+            var ClaimsExtra = new List<Claim>();
+            // Add role claims
+            foreach (var role in roles)
+            {
+                ClaimsExtra.Add(new Claim(ClaimTypes.Role, role));
+            }
+            UserClaims.AddRange(ClaimsExtra);
+
 
             var token = new JwtSecurityToken(
                 issuer: _jwtSetting.ValidIssuer,

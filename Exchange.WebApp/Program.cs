@@ -1,9 +1,12 @@
+using Blazored.LocalStorage;
 using Exchange.BAL.Services;
 using Exchange.Library.Helper;
 using Exchange.WebApp.Components;
 using Exchnage.Library.ClinetHttpServices;
 using MudBlazor.Services;
+using Radzen;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 
 
@@ -21,6 +24,22 @@ var jsonSerializerOptions = new JsonSerializerOptions
     PropertyNameCaseInsensitive = true
 
 };
+
+builder.Services.AddRadzenComponents();
+
+
+
+builder.Services.AddBlazoredLocalStorage(config =>
+{
+    config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+    config.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    config.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
+    config.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    config.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    config.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
+    config.JsonSerializerOptions.WriteIndented = false;
+});
+
 
 // Correct way to add named HttpClient
 //builder.Services.AddHttpClient("ApplicationAPI", client =>
