@@ -1,4 +1,6 @@
-﻿namespace Exchnage.Library.ClinetHttpServices
+﻿using System.Net.Http;
+
+namespace Exchnage.Library.ClinetHttpServices
 {
     public class ApplicationHttpClient(HttpClient httpClient) : IApplicationHttpClient
     {
@@ -8,7 +10,10 @@
         {
             try
             {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMCIsInVuaXF1ZV9uYW1lIjoieWFob28yMjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ5YWhvbzIyMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJVc2VyIiwiVXNlciJdLCJleHAiOjMzMjY1MjE2Mzg2LCJpc3MiOiJ5b3VyLWlzc3VlciIsImF1ZCI6InlvdXItYXVkaWVuY2UifQ.Dy__DIucI9UhVT35x2OlBy3NulXT7vi1dhJPUdULPaw");
                 var response = await httpClient.GetAsync(relativeUrl);
+            
+
                 response.EnsureSuccessStatusCode();
                 var data = await response.Content.ReadFromJsonAsync<T>();
                 return new ApiResponse<T> { Success = true, Data = data, statusCode = response.StatusCode };

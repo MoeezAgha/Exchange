@@ -104,14 +104,14 @@ builder.Services.AddSwaggerGen(options =>
     });
 
     // Add a new parameter named 'ApplicationID'
-    options.AddSecurityDefinition("applicationId", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Name = "ApplicationID",
-        Type = SecuritySchemeType.ApiKey,
-        Description = "Application ID",
-        BearerFormat = "ApplicationID",
-    });
+    //options.AddSecurityDefinition("applicationId", new OpenApiSecurityScheme
+    //{
+    //    In = ParameterLocation.Header,
+    //    Name = "ApplicationID",
+    //    Type = SecuritySchemeType.ApiKey,
+    //    Description = "Application ID",
+    //    BearerFormat = "ApplicationID",
+    //});
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });

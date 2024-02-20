@@ -179,37 +179,45 @@ namespace Exchange.WebAPI.Controllers
 
         private async Task<string> GenerateJwtToken(ApplicationUser user, IList<string> roles, IList<Claim> claims)
         {
-            
+            try
+            {
+
+          
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.IssuerSigningKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var UserClaims = new[]
-            {
+            var UserClaims = new List<Claim>
+                {
                      new Claim(JwtRegisteredClaimNames.Sub,user?.Id.ToString()),
                      new Claim(JwtRegisteredClaimNames.UniqueName, user?.UserName),
                      new Claim(ClaimTypes.Email, user?.Email ?? "")
 
             };
             UserClaims.AddRange(claims);
-            var ClaimsExtra = new List<Claim>();
             // Add role claims
             foreach (var role in roles)
             {
-                ClaimsExtra.Add(new Claim(ClaimTypes.Role, role));
-            }
-            UserClaims.AddRange(ClaimsExtra);
 
+                    UserClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+               // roles.ForEach(role => UserClaims.Add(new Claim(ClaimTypes.Role, role)));
 
             var token = new JwtSecurityToken(
                 issuer: _jwtSetting.ValidIssuer,
                 audience: _jwtSetting.ValidAudience,
-                claims: claims,
+                claims: UserClaims,
                 expires: DateTime.UtcNow.AddYears(1000), // Set token expiration time
                 signingCredentials: creds
             );
 
             return tokenHandler.WriteToken(token);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         private bool CustomLifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken tokenToValidate, TokenValidationParameters @param)

@@ -6,25 +6,26 @@ using Exchange.Library.DataTransferObject;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
+using System.Security.Claims;
 
 namespace Exchange.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
- //   [Authorize]
+   [Authorize]
     public class CategoryController(IUnitOfWork unitOfWork, IServiceProvider serviceProvider, AutoMapper.IMapper mapper) : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         private readonly IServiceProvider _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         private readonly AutoMapper.IMapper _mapper = mapper;
 
-  
 
+        [Authorize(Policy ="User")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ExchangeOffer>>> Get([FromQuery] bool includeProducts = false)
         {
  
-           
+       var z =     this.User;
             var exchangeOffers = includeProducts
               ? await _unitOfWork.Categories.GetAllIncludingAsync(c => c.Products)
               : await _unitOfWork.Categories.GetAllAsync();
