@@ -24,7 +24,7 @@ namespace Exchange.UI.Library.Pages.Admin.Categories
         {
             var a = form.Model as Category;
             //  var z = await _applicationHttpClient.PostJsonAsync<Category>("Category", form.Model as Category);
-            var z = await _applicationHttpClient.PostJsonAsync<Category, Category>("Category", form.Model as Category);
+            var z = await ApplicationHttpClient.PostJsonAsync<Category, Category>("Category", form.Model as Category);
 
 
         }

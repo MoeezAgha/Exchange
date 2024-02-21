@@ -37,15 +37,11 @@ namespace Exchnage.Library.ClinetHttpServices
             {
                 using (var response = await httpClient.PostAsJsonAsync(relativeUrl, request))
                 {
-                    // var z =response.Content.ReadAsStringAsync();
                     response.EnsureSuccessStatusCode();
-                    //  var z = await response.Content.ReadFromJsonAsync<T>();
+                    var apiResponse = await response.Content.ReadFromJsonAsync<T>();
 
-                    return new ApiResponse<T> { Success = true, Data = await response.Content.ReadFromJsonAsync<T>(), statusCode = response.StatusCode };
+                    return new ApiResponse<T> { Success = true, Data = apiResponse, statusCode = response.StatusCode };
                 }
-
-                
-           
             }
             catch (Exception ex)
             {

@@ -18,7 +18,7 @@ namespace Exchange.UI.Library.Pages.Admin.TagArea
 
         protected override async Task OnInitializedAsync()
         {
-            var response = await _applicationHttpClient.GetJsonAsync<List<TagDTO>>("Tag?includeProducts=false");
+            var response = await ApplicationHttpClient.GetJsonAsync<List<TagDTO>>("Tag?includeProducts=false");
 
             if (response.statusCode == HttpStatusCode.OK)
             {

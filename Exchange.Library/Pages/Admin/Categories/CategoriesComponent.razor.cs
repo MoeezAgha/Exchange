@@ -16,7 +16,7 @@ namespace Exchange.UI.Library.Pages.Admin.Categories
         protected override async Task OnInitializedAsync()
         {
 
-            var response = await _applicationHttpClient.GetJsonAsync<List<CategoryDTO>>("Category?includeProducts=false");
+            var response = await ApplicationHttpClient.GetJsonAsync<List<CategoryDTO>>("Category?includeProducts=false");
 
             if (response.statusCode == HttpStatusCode.OK)
             {

@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddRegisterBusinessServices();
 // Add services to the container.
 builder.Services.AddRazorComponents()
+
     .AddInteractiveServerComponents();
 
 builder.Services.AddMudServices();

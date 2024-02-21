@@ -1,4 +1,5 @@
-﻿using Exchnage.Library.ClinetHttpServices;
+﻿using Blazored.LocalStorage;
+using Exchnage.Library.ClinetHttpServices;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,10 @@ namespace Exchange.UI.Library.Helper.BaseComponets
     {
 
         [Inject]
-        protected ApplicationHttpClient? _applicationHttpClient { get; set; } = default;
+        protected ApplicationHttpClient? ApplicationHttpClient { get; set; } = default;
 
+        [Inject]
+        public ILocalStorageService LocalStorageService { get; set; }
         //public void Dispose()
         //{
         //    // will use event to Dispose

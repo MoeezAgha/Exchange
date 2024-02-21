@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Common;
 using NuGet.Packaging;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -99,7 +100,7 @@ namespace Exchange.WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.UserName);
+                var user = await _userManager.FindByEmailAsync(model.Username);
 
                 if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
                 {
@@ -111,7 +112,7 @@ namespace Exchange.WebAPI.Controllers
 
 
                     var writeToken = await GenerateJwtToken(user, roles,claims);
-                    return Ok(new { Result = writeToken });
+                    return Ok(new { Token = writeToken });
                 }
 
                 return Unauthorized();

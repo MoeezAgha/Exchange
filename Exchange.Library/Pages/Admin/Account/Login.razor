@@ -1,0 +1,60 @@
+﻿@page "/login"
+@using Exchnage.Library.DataTransferObject.Account
+@using Exchnage.Library.Helper
+@using Radzen
+@using System.Net
+@rendermode RenderMode.InteractiveServer
+
+@inherits BarterBaseComponet<Login>
+
+<h3>Login</h3>
+<RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
+    <RadzenTemplateForm Data=@("LoginWithDefaultValues")>
+        <RadzenLogin AllowRegister="true" AllowResetPassword="true" Username=@loginModel.Username Password=@loginModel.Password
+                     AllowRememberMe="true" RememberMe="@loginModel.RememberMe"
+                     Login=@(args => OnLogin(args))
+                     ResetPassword=@(args => OnResetPassword(args, "Login with default values"))
+                     Register=@(args => OnRegister("Login with default values")) />
+    </RadzenTemplateForm>
+</RadzenCard>
+
+
+@code {
+    string userName = "yahoo1";
+    string password = "Yahoo580@@##";
+    bool rememberMe = true;
+
+    public LoginViewModel loginModel { get; set; } = new LoginViewModel();
+
+    public async Task OnLogin(LoginArgs loginArgs)
+    {
+        var response = await ApplicationHttpClient.PostJsonAsync<LoginViewModel, TokenResponse>("Authentication/login", loginModel);
+
+        if (response.statusCode == HttpStatusCode.OK)
+        {
+            await LocalStorageService.SetItemAsync("token", response.Data);
+         
+        }
+        else
+        {
+            //NotificationService.Notify(NotificationSeverity.Error, "Error", response.Message);
+        }
+
+    }
+
+    void OnRegister(string name)
+    {
+    }
+
+    void OnResetPassword(string value, string name)
+    {
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        loginModel.Username = userName;
+        loginModel.Password = password;
+        //await LocalStorageService.SetItemAsync("name", "John Smith");
+        //  var name = await LocalStorageService.GetItemAsync<string>("name");
+    }
+}

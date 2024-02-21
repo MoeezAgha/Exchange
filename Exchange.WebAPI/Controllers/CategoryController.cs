@@ -20,12 +20,11 @@ namespace Exchange.WebAPI.Controllers
         private readonly AutoMapper.IMapper _mapper = mapper;
 
 
-        [Authorize(Policy ="User")]
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ExchangeOffer>>> Get([FromQuery] bool includeProducts = false)
         {
  
-       var z =     this.User;
             var exchangeOffers = includeProducts
               ? await _unitOfWork.Categories.GetAllIncludingAsync(c => c.Products)
               : await _unitOfWork.Categories.GetAllAsync();

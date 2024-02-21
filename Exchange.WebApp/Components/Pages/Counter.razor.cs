@@ -13,7 +13,7 @@ namespace Exchange.WebApp.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var response = await _applicationHttpClient.GetJsonAsync<List<CategoryDTO>>("Category");
+            var response = await ApplicationHttpClient.GetJsonAsync<List<CategoryDTO>>("Category");
 
             if (response.statusCode == HttpStatusCode.OK)
             {
