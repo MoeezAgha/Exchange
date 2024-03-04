@@ -2,33 +2,44 @@
 using Exchnage.Library.DataTransferObject.Account;
 using Microsoft.JSInterop;
 using System.Net.Http;
+using System.Text.Json;
 
 namespace Exchnage.Library.ClinetHttpServices
 {
-    public class ApplicationHttpClient(HttpClient httpClient , ILocalStorageService localStorageService) : IApplicationHttpClient
+    public class ApplicationHttpClient : IApplicationHttpClient
     {
-        private readonly HttpClient httpClient = httpClient;
+        private readonly HttpClient _httpClient;
+        private ILocalStorageService _localStorageService;
+        private TokenResponse _token;
+        private string token;
+        public ApplicationHttpClient(HttpClient httpClient, ILocalStorageService localStorageService)
+        {
+            _httpClient = httpClient;
+            _localStorageService = localStorageService;
+        }
 
+        private async Task<string> GetTokenAsync()
+        {
+          //  return new TokenResponse { Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1IiwidW5pcXVlX25hbWUiOiJ5YWhvbzIyMiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InlhaG9vMjIyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MzMyNjYwMDQ1MzQsImlzcyI6InlvdXItaXNzdWVyIiwiYXVkIjoieW91ci1hdWRpZW5jZSJ9.EKI4i83W30eycZ81VZCzWjRxbIAYmx9EvmpGvdivy3E" };
+            if (token == null)
+            {
+               // _token =  await _localStorageService.GetItemAsync<TokenResponse>("token");
+                 token = JsonSerializer.Deserialize<string>(await _localStorageService.GetItemAsStringAsync("token"));
+             //   _token = JsonSerializer.Deserialize<TokenResponse>(tokenJson);
+
+             //   token = await _localStorageService.GetItemAsStringAsync("token");
+            }
+            return token;
+        }
         public async Task<ApiResponse<T>> GetJsonAsync<T>(string relativeUrl)
         {
             try
             {
 
-           var token = await localStorageService.GetItemAsync<TokenResponse>("token");
+                var token = await  GetTokenAsync();
 
-                if (token == null)
-                {
-
-
-                }
-                else
-                {
-                     
-                }
-                //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMCIsInVuaXF1ZV9uYW1lIjoieWFob28yMjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ5YWhvbzIyMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJVc2VyIiwiVXNlciJdLCJleHAiOjMzMjY1MjE2Mzg2LCJpc3MiOiJ5b3VyLWlzc3VlciIsImF1ZCI6InlvdXItYXVkaWVuY2UifQ.Dy__DIucI9UhVT35x2OlBy3NulXT7vi1dhJPUdULPaw");
-
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
-                var response = await httpClient.GetAsync(relativeUrl);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var response = await _httpClient.GetAsync(relativeUrl);
             
 
                 response.EnsureSuccessStatusCode();
@@ -42,7 +53,7 @@ namespace Exchnage.Library.ClinetHttpServices
         }
         public async Task<ApiResponse<T>> Get<T>(string relativeUrl)
         {
-            var response = await httpClient.GetAsync(relativeUrl);
+            var response = await _httpClient.GetAsync(relativeUrl);
             response.EnsureSuccessStatusCode();
             var data = await response.Content.ReadFromJsonAsync<T>();
             return new ApiResponse<T> { Success = true, Data = data };
@@ -52,7 +63,7 @@ namespace Exchnage.Library.ClinetHttpServices
         {
             try
             {
-                using (var response = await httpClient.PostAsJsonAsync(relativeUrl, request))
+                using (var response = await _httpClient.PostAsJsonAsync(relativeUrl, request))
                 {
                     response.EnsureSuccessStatusCode();
                     var apiResponse = await response.Content.ReadFromJsonAsync<T>();
@@ -68,14 +79,14 @@ namespace Exchnage.Library.ClinetHttpServices
 
         public async Task<T> PutJsonAsync<TRequest, T>(string relativeUrl, TRequest request)
         {
-            var response = await httpClient.PutAsJsonAsync(relativeUrl, request);
+            var response = await _httpClient.PutAsJsonAsync(relativeUrl, request);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
         public async Task DeleteAsync(string relativeUrl)
         {
-            var response = await httpClient.DeleteAsync(relativeUrl);
+            var response = await _httpClient.DeleteAsync(relativeUrl);
             response.EnsureSuccessStatusCode();
         }
 
@@ -87,7 +98,7 @@ namespace Exchnage.Library.ClinetHttpServices
         public void AddAuthorizationHeader(string jwtToken)
         {
             // Add the token to the request headers
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
         }
     }
 }

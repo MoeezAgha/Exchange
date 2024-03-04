@@ -16,6 +16,7 @@ namespace Exchange.BAL.Services.Contracts
          ProductRepository Products { get;  }
          ProductImageRepository ProductImages { get;  }
          TagRepository Tags { get;  }
+        NavMenuRepository NavMenu { get;  }
          Task<int> SaveChangesAsync();
      
     }

@@ -128,7 +128,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 #region ConnectionString
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BarterAppConnectionString")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ExchangeWebAPIContext")));
 #endregion 
 
 

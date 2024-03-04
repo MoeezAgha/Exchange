@@ -6,5 +6,6 @@ namespace Exchange.BAL.Services.Contracts
     {
         // Additional methods specific to Category
     }
-  
+
+
 }

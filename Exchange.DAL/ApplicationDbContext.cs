@@ -19,7 +19,7 @@ namespace Exchange.DAL
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<ExchangeOffer> ExchangeOffers { get; set; }
+        public DbSet<NavMenu> NavMenu { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -33,24 +33,15 @@ namespace Exchange.DAL
         //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-
             base.OnModelCreating(modelBuilder);
 
-         
+ 
 
-
-            modelBuilder.Entity<ExchangeOffer>()
-                .HasOne(e => e.ExchangeOfferByUser)
-                .WithMany(u => u.SendExchangeOffers)
-                .HasForeignKey(e => e.ExchangeOfferByUserId)
-                .OnDelete(DeleteBehavior.NoAction); // Choose the appropriate cascade action
-
-            modelBuilder.Entity<ExchangeOffer>()
-                .HasOne(e => e.Product)
-                .WithMany(p => p.ExchangeOffers)
-                .HasForeignKey(e => e.ProductId)
-                .OnDelete(DeleteBehavior.NoAction); // Choose the appropriate cascade action
+            //// Configure the one-to-many relationship between Product and ExchangeOffer
+            //modelBuilder.Entity<Product>()
+            //    .HasMany(p => p.ExchangeOffers) // Assuming Product has a collection of ExchangeOffers
+            //    .WithOne(e => e.Product) // Assuming ExchangeOffer has a navigation property to Product
+            //    .HasForeignKey(e => e.ProductId); // Assuming ExchangeOffer has a foreign key property to Product
 
         }
 

@@ -9,14 +9,12 @@ namespace Exchange.DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int ExchangeOfferId { get; set; }
-        public string OfferName { get; set; }
-        // Other offer properties
-
+    
+        public string OfferDetails { get; set; }
+        // ForeignKey to Product
         public int ProductId { get; set; }
         public Product Product { get; set; }
-
-
-   
+        // ForeignKey for ApplicationUser who made the offer
         public int ExchangeOfferByUserId { get; set; }
         public ApplicationUser ExchangeOfferByUser { get; set; }
 

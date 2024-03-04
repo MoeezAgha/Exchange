@@ -172,56 +172,47 @@ namespace Exchange.DAL.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category", "Product");
                 });
 
-            modelBuilder.Entity("Exchange.DAL.Models.ExchangeOffer", b =>
+            modelBuilder.Entity("Exchange.DAL.Models.NavMenu", b =>
                 {
-                    b.Property<int>("ExchangeOfferId")
+                    b.Property<int>("MenuId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExchangeOfferId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MenuId"));
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ExchangeOfferByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("OfferName")
+                    b.Property<string>("Icon")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductId1")
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("ParentMenuId")
                         .HasColumnType("int");
 
-                    b.HasKey("ExchangeOfferId");
+                    b.Property<string>("Route")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.HasIndex("ExchangeOfferByUserId");
+                    b.HasKey("MenuId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("Id");
 
-                    b.HasIndex("ProductId1")
-                        .IsUnique()
-                        .HasFilter("[ProductId1] IS NOT NULL");
+                    b.HasIndex("ParentMenuId");
 
-                    b.ToTable("ExchangeOffers");
+                    b.ToTable("NavMenu", "Menu");
                 });
 
             modelBuilder.Entity("Exchange.DAL.Models.Product", b =>
@@ -232,7 +223,7 @@ namespace Exchange.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
-                    b.Property<int?>("CategoriesCategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("CreatedBy")
@@ -253,7 +244,7 @@ namespace Exchange.DAL.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ProductCreatedById")
+                    b.Property<int>("ProductCreatedByUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProductDescription")
@@ -264,22 +255,17 @@ namespace Exchange.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TagsTagId")
-                        .HasColumnType("int");
-
                     b.Property<string>("WantDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProductId");
 
-                    b.HasIndex("CategoriesCategoryId");
+                    b.HasIndex("CategoryId");
 
-                    b.HasIndex("ProductCreatedById");
+                    b.HasIndex("ProductCreatedByUserId");
 
-                    b.HasIndex("TagsTagId");
-
-                    b.ToTable("Products");
+                    b.ToTable("Product", "Product");
                 });
 
             modelBuilder.Entity("Exchange.DAL.Models.ProductImage", b =>
@@ -304,7 +290,7 @@ namespace Exchange.DAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImage", "Product");
                 });
 
             modelBuilder.Entity("Exchange.DAL.Models.Tag", b =>
@@ -478,50 +464,55 @@ namespace Exchange.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Exchange.DAL.Models.ExchangeOffer", b =>
+            modelBuilder.Entity("ProductTag", b =>
                 {
-                    b.HasOne("Exchange.DAL.Models.ApplicationUser", "ExchangeOfferByUser")
-                        .WithMany("SendExchangeOffers")
-                        .HasForeignKey("ExchangeOfferByUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                    b.Property<int>("ProductsProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagsTagId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductsProductId", "TagsTagId");
+
+                    b.HasIndex("TagsTagId");
+
+                    b.ToTable("ProductTag");
+                });
+
+            modelBuilder.Entity("Exchange.DAL.Models.NavMenu", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", "AccessRoleId")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Exchange.DAL.Models.Product", "Product")
-                        .WithMany("ExchangeOffers")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.HasOne("Exchange.DAL.Models.NavMenu", "ParentMenu")
+                        .WithMany("SubMenus")
+                        .HasForeignKey("ParentMenuId");
 
-                    b.HasOne("Exchange.DAL.Models.Product", null)
-                        .WithOne("AcceptedOffer")
-                        .HasForeignKey("Exchange.DAL.Models.ExchangeOffer", "ProductId1");
+                    b.Navigation("AccessRoleId");
 
-                    b.Navigation("ExchangeOfferByUser");
-
-                    b.Navigation("Product");
+                    b.Navigation("ParentMenu");
                 });
 
             modelBuilder.Entity("Exchange.DAL.Models.Product", b =>
                 {
-                    b.HasOne("Exchange.DAL.Models.Category", "Categories")
+                    b.HasOne("Exchange.DAL.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoriesCategoryId");
-
-                    b.HasOne("Exchange.DAL.Models.ApplicationUser", "ProductCreatedBy")
-                        .WithMany("Products")
-                        .HasForeignKey("ProductCreatedById")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Exchange.DAL.Models.Tag", "Tags")
+                    b.HasOne("Exchange.DAL.Models.ApplicationUser", "ProductCreatedByUser")
                         .WithMany("Products")
-                        .HasForeignKey("TagsTagId");
+                        .HasForeignKey("ProductCreatedByUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Categories");
+                    b.Navigation("Category");
 
-                    b.Navigation("ProductCreatedBy");
-
-                    b.Navigation("Tags");
+                    b.Navigation("ProductCreatedByUser");
                 });
 
             modelBuilder.Entity("Exchange.DAL.Models.ProductImage", b =>
@@ -590,13 +581,26 @@ namespace Exchange.DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProductTag", b =>
+                {
+                    b.HasOne("Exchange.DAL.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Exchange.DAL.Models.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsTagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Exchange.DAL.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Products");
 
                     b.Navigation("Roles");
-
-                    b.Navigation("SendExchangeOffers");
                 });
 
             modelBuilder.Entity("Exchange.DAL.Models.Category", b =>
@@ -604,18 +608,14 @@ namespace Exchange.DAL.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Exchange.DAL.Models.Product", b =>
+            modelBuilder.Entity("Exchange.DAL.Models.NavMenu", b =>
                 {
-                    b.Navigation("AcceptedOffer");
-
-                    b.Navigation("ExchangeOffers");
-
-                    b.Navigation("ProductImages");
+                    b.Navigation("SubMenus");
                 });
 
-            modelBuilder.Entity("Exchange.DAL.Models.Tag", b =>
+            modelBuilder.Entity("Exchange.DAL.Models.Product", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("ProductImages");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,10 +21,11 @@ namespace Exchange.DAL.Models
     }
 
     // [Table("ApplicationUser", Schema = "User")]
+    [Table("ApplicationUser", Schema = "User")]
 
     public class ApplicationUser : IdentityUser<int> , IAuditable
     {
-
+    
         //One User can place multiple Products 
         public ICollection<Product> Products { get; set; }
 
@@ -32,7 +34,7 @@ namespace Exchange.DAL.Models
 
 
         //One User can send mutiple ExchangeOffer to other user products 
-        public ICollection<ExchangeOffer> SendExchangeOffers { get; set; }
+        //public ICollection<ExchangeOffer> SendExchangeOffers { get; set; }
 
         public string? CreatedBy { get; set; } = "System";
         public DateTime CreatedDate { get; set; } = DateTime.Now;
@@ -41,5 +43,4 @@ namespace Exchange.DAL.Models
 
     }
 
-   
 }

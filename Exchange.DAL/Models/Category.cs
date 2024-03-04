@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Exchange.DAL.Models
 {
-    //   [Table("Category", Schema = "Product")]
+    [Table("Category", Schema = "Product")]
     public class Category : IAuditable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,8 +23,5 @@ namespace Exchange.DAL.Models
         public bool IsPublic { get; set; }
     }
 
-    public class ss {
-        public string CategoryName { get; set; }
-
-    }
+ 
 }

@@ -1,5 +1,11 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Exchange.UI.Library.Helper.NavigationMenu
+@using Exchange.UI.Library.Helper.StateProviderHelper
+@rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Authorization;
+@inject NavigationMenuService NavigationMenuService
+@inject ApplicationHttpClient ApplicationHttpClient;
+@inherits BarterBaseComponet<NavMenu>
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -11,23 +17,42 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
+      
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
+        
+            @if (navMenuItems != null && isAuthenticated)
+        {
+            @foreach (var item in navMenuItems)
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="@item.ParentMenu" Match="NavLinkMatch.All">
+                        <span class="@item.Icon"></span> @item.Name
+                    </NavLink>
+                </div>
+            }
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> tags
-            </NavLink>
-        </div>
+        
+        }
+        @if (!isAuthenticated)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Login
+                </NavLink>
+            </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="categories">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> category
-            </NavLink>
-        </div>
+
+        }
+
+        
+        
+
+        
+
 
 
         
@@ -35,13 +60,54 @@
 </div>
 
 @code {
-    private bool isAdmin;
+    private bool isAuthenticated = false;
+
+    [Inject]
+    public NavigationManager _navigationManager { get; set; }
+    public List<NavMenuDTO> navMenuItems { get; set; } = new List<NavMenuDTO>();
+
+
+    [Inject]
+    public NavigationMenuSeriveEvent _navigationMenuSeriveEvent { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
 
-        isAdmin = user.IsInRole("Admin");
+        _navigationMenuSeriveEvent.RefreshTheNavMenuEvent += UpdateTheNavMenu;
+
     }
+
+    private async void UpdateTheNavMenu()
+    {
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isAuthenticated = authstate.User.Identity.IsAuthenticated;
+
+        if (isAuthenticated)
+        {
+            navMenuItems = await NavigationMenuService.GetNavMenuItemsAsync();
+        }
+        this.StateHasChanged();
+
+    }
+
+    public void Dispose()
+    {
+        _navigationMenuSeriveEvent.RefreshTheNavMenuEvent -= UpdateTheNavMenu;
+    }
+
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isAuthenticated = authstate.User.Identity.IsAuthenticated;
+        if (isAuthenticated)
+        {
+            navMenuItems = await NavigationMenuService.GetNavMenuItemsAsync();
+        }
+        this.StateHasChanged();
+    }
+
+
 }

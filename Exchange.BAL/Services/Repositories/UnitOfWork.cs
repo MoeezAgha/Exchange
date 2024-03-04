@@ -29,6 +29,7 @@ namespace Exchange.BAL.Services.Repositories
             Products = new ProductRepository(_context);
             ProductImages = new ProductImageRepository(_context);
             Tags = new TagRepository(_context);
+            NavMenu=  new NavMenuRepository(_context);
             _httpContextAccessor = httpContextAccessor;
        
         }
@@ -39,6 +40,8 @@ namespace Exchange.BAL.Services.Repositories
         public ProductRepository Products { get; set; }
         public ProductImageRepository ProductImages { get; set; }
         public TagRepository Tags { get; set; }
+
+        public NavMenuRepository NavMenu { get; set; }
 
         public async Task<int> SaveChangesAsync()
         {

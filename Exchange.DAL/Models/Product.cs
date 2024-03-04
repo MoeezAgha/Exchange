@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Exchange.DAL.Models
 {
-    // [Table("Product", Schema = "Product")]
+     [Table("Product", Schema = "Product")]
     public class Product : IAuditable
     {//barter
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -15,21 +15,19 @@ namespace Exchange.DAL.Models
 
         public string WantDescription { get; set; }
 
-
         // Other product properties
         public bool IsPublic { get; set; }
         public bool IsAcceptedOffer { get; set; }
-        public ExchangeOffer? AcceptedOffer { get; set; }
+      //  public ExchangeOffer? AcceptedOffer { get; set; }
 
-      
-        public int ProductCreatedById { get; set; }
-        public ApplicationUser? ProductCreatedBy { get; set; }
-
-        public ICollection<ProductImage>? ProductImages { get; set; }
-        public Category? Categories { get; set; }
-        public Tag? Tags { get; set; }
-        public ICollection<ExchangeOffer>? ExchangeOffers { get; set; }
-
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
+        public ICollection<Tag>? Tags { get; set; }
+        public ICollection<ProductImage> ProductImages { get; set; }
+        // One product can have many exchange offers
+     //   public ICollection<ExchangeOffer>? ExchangeOffers { get; set; }
+        public int ProductCreatedByUserId { get; set; } // ForeignKey for ApplicationUser
+        public ApplicationUser ProductCreatedByUser { get; set; }
 
         public string? CreatedBy { get; set; } 
         public DateTime CreatedDate { get; set; } = DateTime.Now;

@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Helper\DataTransferObject\" />
-    <Folder Include="Services\" />
+    <Folder Include="Services\NavMenuHelper\" />
   </ItemGroup>
 
   <ItemGroup>

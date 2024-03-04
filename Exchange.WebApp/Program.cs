@@ -1,8 +1,12 @@
 using Blazored.LocalStorage;
 using Exchange.BAL.Services;
 using Exchange.Library.Helper;
+using Exchange.UI.Library.Helper.NavigationMenu;
+using Exchange.UI.Library.Helper.StateProviderHelper;
 using Exchange.WebApp.Components;
 using Exchnage.Library.ClinetHttpServices;
+
+using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
 using Radzen;
 using System.Text.Json;
@@ -29,7 +33,6 @@ var jsonSerializerOptions = new JsonSerializerOptions
 builder.Services.AddRadzenComponents();
 
 
-
 builder.Services.AddBlazoredLocalStorage(config =>
 {
     config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
@@ -53,8 +56,11 @@ builder.Services.AddHttpClient<ApplicationHttpClient>(client =>
     client.BaseAddress = new Uri("https://localhost:7271/api/");
 });
 
-var app = builder.Build();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<NavigationMenuService>();
+builder.Services.AddScoped<NavigationMenuSeriveEvent>();
 
+var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.

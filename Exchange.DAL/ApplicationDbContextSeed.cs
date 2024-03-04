@@ -125,7 +125,7 @@ namespace Exchange.DAL
         ProductName = "Sample Product 1",
         IsPublic = true,
         IsAcceptedOffer = false,
-        ProductCreatedById = 5, // Make sure this corresponds to an existing or seeded user
+        ProductCreatedByUserId = 5, // Make sure this corresponds to an existing or seeded user
         CreatedBy = "Seeder",
         CreatedDate = DateTime.UtcNow,
         ModifiedBy = null,
@@ -137,7 +137,7 @@ namespace Exchange.DAL
         ProductName = "Sample Product 2",
         IsPublic = true,
         IsAcceptedOffer = false,
-        ProductCreatedById = 5, // Same note as above
+        ProductCreatedByUserId = 5, // Same note as above
         CreatedBy = "Seeder",
         CreatedDate = DateTime.UtcNow,
         ModifiedBy = null,

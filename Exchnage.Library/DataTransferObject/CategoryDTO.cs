@@ -1,18 +1,21 @@
-﻿namespace Exchange.Library.DataTransferObject
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace Exchange.Library.DataTransferObject
 {
     [JsonSerializable(typeof(CategoryDTO))]
     public class CategoryDTO :Category
     {
-        //public int CategoryId { get; set; }
-        //public string CategoryName { get; set; }
-        //public ICollection<Product>? Products { get; set; }
-
-        //public string? CreatedBy { get; set; }
-        //public DateTime CreatedDate { get; set; } = DateTime.Now;
-        //public string? ModifiedBy { get; set; }
-        //public DateTime ModifiedDate { get; set; } = DateTime.Now;
-        //public bool IsPublic { get; set; }
+ 
     }
 
+    [JsonSerializable(typeof(NavMenu))]
+
+    public class NavMenuDTO : NavMenu
+    {
+     
+
+    }
 
 }

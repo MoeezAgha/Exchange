@@ -29,7 +29,7 @@ namespace Exchange.WebAPI.Controllers
         public async Task<ActionResult<IEnumerable<Product>>> Get([FromQuery] bool includeProducts = false)
         {
             var product = includeProducts
-              ? await _repository.GetAllIncludingAsync(tag => tag.Tags, Category => Category.Categories , Exchange => Exchange.ExchangeOffers)
+              ? await _repository.GetAllIncludingAsync(tag => tag.Tags, Category => Category.Category )
               : await _repository.GetAllAsync();
             return Ok(product);
         }

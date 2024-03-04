@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Exchange.DAL.Models
 {
-    // [Table("ProductImage", Schema = "Product")]
+     [Table("ProductImage", Schema = "Product")]
     public class ProductImage 
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

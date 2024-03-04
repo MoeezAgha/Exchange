@@ -1,13 +1,13 @@
-﻿@page "/tags"
+﻿ @page "/tags"
 
 @using Exchange.UI.Library.Helper.BaseComponets
 @using Microsoft.VisualBasic
-@using MudBlazor
+@using MudBlazor;
 @rendermode RenderMode.InteractiveServer
-
-
-<h3>Tag</h3>
 @inherits BarterBaseComponet<TagComponent>
+@*
+<h3>Tag</h3>
+
 
 <MudDataGrid Items="@_tagDTO" Filterable="false" SortMode="@SortMode.Multiple" Groupable="false">
 
@@ -30,3 +30,4 @@
 @code {
 
 }
+ *@
