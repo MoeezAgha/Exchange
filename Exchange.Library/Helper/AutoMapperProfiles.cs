@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-
 using Exchange.DAL.Models;
 using Exchange.Library.DataTransferObject;
 using System;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Exchange.BAL.Services.AutoMapper
+namespace Exchange.UI.Library.Helper
 {
     public class AutoMapperProfiles : Profile
     {

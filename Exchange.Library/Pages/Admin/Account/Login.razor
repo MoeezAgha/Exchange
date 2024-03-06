@@ -1,6 +1,8 @@
 ﻿@page "/login"
-@rendermode RenderMode.InteractiveServer
+
 @inherits BarterBaseComponet<Login>
+@using Exchange.UI.Library.Helper.StateProviderHelper;
+@inject CustomAuthenticationStateProvider CustomAuthenticationStateProvider;
 
 <h3>Login</h3>
 <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
@@ -18,8 +20,8 @@
     public LoginViewModel loginModel { get; set; } = new LoginViewModel();
     [Inject]
     public NavigationMenuSeriveEvent _navigationMenuSeriveEvent { get; set; }
-     [Inject]
-      public NavigationManager _navigationManager { get; set; }
+    [Inject]
+    public NavigationManager _navigationManager { get; set; }
     string userName = "yahoo222";
     string password = "Yahoo580@@##";
     bool rememberMe = true;
@@ -32,21 +34,32 @@
 
     public async Task OnLogin(LoginArgs loginArgs)
     {
+        var authStatez = await CustomAuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userz = authStatez.User;
 
-        var response = await _applicationHttpClient.PostJsonAsync<LoginViewModel, TokenResponse>("Authentication/login", loginModel);
+        var response = await _applicationHttpClient
+        .PostJsonAsync<LoginViewModel, TokenResponse>("Authentication/login", loginModel);
 
         if (response.statusCode == HttpStatusCode.OK)
         {
             await LocalStorageService.SetItemAsync("token", response.Data.Token);
-             _navigationMenuSeriveEvent.RefreshNavMenuChanges();
-            _navigationManager.NavigateTo("/");
+            _navigationMenuSeriveEvent.RefreshNavMenuChanges();
+            await CustomAuthenticationStateProvider.NotifyAuthenticationStateChanged();
+            var authState = await CustomAuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            if (authState.User.Identity.IsAuthenticated)
+            {
+                
+                _navigationManager.NavigateTo("/",true);
+            }
+
+            //
         }
         else
         {
             // Handle login failure, consider using a notification service to inform the user
         }
     }
-   
 
     void OnRegister(string name)
     {

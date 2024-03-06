@@ -1,5 +1,6 @@
 ﻿using Exchange.BAL.Services.Contracts;
 using Exchange.DAL.Models;
+using Exchange.Library.DataTransferObject;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -33,25 +34,28 @@ namespace Exchange.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tag>> Get(int id)
+        public async Task<ActionResult<Tag>> GetId(int id)
         {
             var tag = await _repository.GetByIdAsync(id);
             return tag != null ? Ok(tag) : NotFound();
         }
-
         [HttpPost]
         public async Task<ActionResult<Tag>> Post([FromBody] Tag tag)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid model state.");
+                // Consider returning more detailed validation errors
+                return BadRequest(ModelState);
             }
 
             await _repository.AddAsync(tag);
             await _unitOfWork.SaveChangesAsync();
+            
 
-            return CreatedAtAction(nameof(Get), new { id = tag.TagId }, tag);
+            // Return a 201 Created response with a location header pointing to the new resource
+            return CreatedAtAction(nameof(GetId), new { id = tag.TagId },tag);
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] Tag tag)

@@ -1,8 +1,9 @@
-﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+﻿@inject CustomAuthenticationStateProvider AuthenticationStateProvider
 @using Exchange.UI.Library.Helper.NavigationMenu
 @using Exchange.UI.Library.Helper.StateProviderHelper
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Authorization;
+@using System.Security.Claims;
 @inject NavigationMenuService NavigationMenuService
 @inject ApplicationHttpClient ApplicationHttpClient;
 @inherits BarterBaseComponet<NavMenu>
@@ -15,40 +16,73 @@
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
+
+
+
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
       
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        
-            @if (navMenuItems != null && isAuthenticated)
-        {
-            @foreach (var item in navMenuItems)
-            {
+
+        <Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+
+            <Authorized>
+
+                @if (navMenuItems != null && isAuthenticated)
+                {
+                    @foreach (var item in navMenuItems)
+                    {
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="@item.ParentMenu" Match="NavLinkMatch.All">
+                                <span class="@item.Icon"></span> @item.Name
+                            </NavLink>
+                        </div>
+                    }
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" onclick="@OnLoginOff" href="login" Match="NavLinkMatch.All">
+                            <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Log Out
+                        </NavLink>
+                    </div>
+
+
+                }
+            </Authorized>
+
+
+            <NotAuthorized>
+
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="@item.ParentMenu" Match="NavLinkMatch.All">
-                        <span class="@item.Icon"></span> @item.Name
+                    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
                     </NavLink>
                 </div>
-            }
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
+                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
 
-        
-        }
-        @if (!isAuthenticated)
+            </NotAuthorized>
+        </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+
+@* 
+
+        @if (isAuthenticated)
         {
+                  <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home1
+                </NavLink>
+            </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
-                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Login
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Login1
                 </NavLink>
             </div>
 
 
         }
-
-        
+ *@
+          
         
 
         
@@ -100,6 +134,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+
         var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         isAuthenticated = authstate.User.Identity.IsAuthenticated;
         if (isAuthenticated)
@@ -108,6 +143,21 @@
         }
         this.StateHasChanged();
     }
+    public async Task OnLoginOff()
+    {
 
+        await   LocalStorageService.RemoveItemAsync("token");
 
+        // Create a new authentication state with an unauthenticated user
+        var authState = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
+
+        // Cast to CustomAuthenticationStateProvider to access the NotifyAuthenticationStateChanged method
+        if (AuthenticationStateProvider is CustomAuthenticationStateProvider customAuthStateProvider)
+        {
+          await  AuthenticationStateProvider.NotifyAuthenticationStateChanged();
+        }
+        UpdateTheNavMenu();
+        _navigationManager.NavigateTo("/",true);
+        //this.StateHasChanged();
+    }
 }

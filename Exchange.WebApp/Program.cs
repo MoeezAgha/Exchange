@@ -1,12 +1,15 @@
 using Blazored.LocalStorage;
 using Exchange.BAL.Services;
+using Exchange.BAL.Services.AutoMapper;
 using Exchange.Library.Helper;
 using Exchange.UI.Library.Helper.NavigationMenu;
 using Exchange.UI.Library.Helper.StateProviderHelper;
+using Exchange.WebApp;
 using Exchange.WebApp.Components;
 using Exchnage.Library.ClinetHttpServices;
 
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 using Radzen;
 using System.Text.Json;
@@ -22,6 +25,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddMudServices();
+//builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+
 //JSON serialization options for System.Text.Json
 var jsonSerializerOptions = new JsonSerializerOptions
 {
@@ -56,10 +61,12 @@ builder.Services.AddHttpClient<ApplicationHttpClient>(client =>
     client.BaseAddress = new Uri("https://localhost:7271/api/");
 });
 
+builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+//builder.Services.AddAutoMapper();
 builder.Services.AddScoped<NavigationMenuService>();
 builder.Services.AddScoped<NavigationMenuSeriveEvent>();
-
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 var app = builder.Build();
 
 

@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Exchange.Library.DataTransferObject;
 using Exchnage.Library.DataTransferObject.Account;
 using Microsoft.JSInterop;
 using System.Net.Http;
@@ -63,12 +64,20 @@ namespace Exchnage.Library.ClinetHttpServices
         {
             try
             {
+    
                 using (var response = await _httpClient.PostAsJsonAsync(relativeUrl, request))
                 {
                     response.EnsureSuccessStatusCode();
-                    var apiResponse = await response.Content.ReadFromJsonAsync<T>();
+                    var apiResponse = await response.Content.ReadFromJsonAsync<object>();
+                    var apiResponse22 = await response.Content.ReadFromJsonAsync<TagDTO>();
 
-                    return new ApiResponse<T> { Success = true, Data = apiResponse, statusCode = response.StatusCode };
+                    var z = apiResponse;
+                    return new ApiResponse<T>
+                    {
+                        Success = response.IsSuccessStatusCode,
+                        //Data = apiResponse,
+                        statusCode = response.StatusCode
+                    };
                 }
             }
             catch (Exception ex)

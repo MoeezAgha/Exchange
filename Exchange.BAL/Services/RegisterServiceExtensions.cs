@@ -16,9 +16,8 @@ namespace Exchange.BAL.Services
     {
         public static IServiceCollection AddRegisterBusinessServices(this IServiceCollection services)
         {
-          services.AddAutoMapper(typeof(AutoMapperProfiles));
+          //services.AddAutoMapper(typeof(AutoMapperProfiles));
           services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-          services.AddAutoMapper(typeof(AutoMapperProfiles));
          services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
             

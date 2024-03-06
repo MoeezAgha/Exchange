@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.Components.Authorization;
+using AutoMapper;
 namespace Exchange.UI.Library.Helper.BaseComponets
 {
     public class BarterBaseComponet<T> : ComponentBase, IDisposable
@@ -21,6 +22,8 @@ namespace Exchange.UI.Library.Helper.BaseComponets
         [Inject]
         public ILocalStorageService LocalStorageService { get; set; }
 
+        [Inject]
+        public IMapper _mapper { get; set; }
 
         //[Inject]
         //public AuthenticationStateProvider AuthenticationStateProvider { get; set; }

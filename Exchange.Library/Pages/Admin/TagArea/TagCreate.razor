@@ -3,4 +3,72 @@
 @inherits BarterBaseComponet<TagCreate>
 
 <h3>TagCreate</h3>
+@if (!string.IsNullOrEmpty(AlertMessage))
+{
+    <RadzenAlert AllowClose="true" AlertStyle="@AlertStyleType" Variant="Variant.Flat" Shade="Shade.Lighter">
+        @AlertMessage
+    </RadzenAlert>
 
+}
+
+<div Class="rz-p-0 rz-p-md-12">
+   
+    <RadzenTemplateForm TItem="TagDTO" Data=@model Submit=@OnSubmit InvalidSubmit=@OnInvalidSubmit>
+        <RadzenStack Gap="1rem" Class="rz-p-sm-12">
+            <RadzenFormField Text="Tag Name" Variant="@variant">
+                <ChildContent>
+                    <RadzenTextBox Name="FirstName" @bind-Value=@model.TagName/>
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="FirstName" Text="First name is required." />
+                </Helper>
+            </RadzenFormField>
+     
+                    <RadzenCheckBox Name="IsPublic" @bind-Value=@model.IsPublic />
+          
+        
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit" ></RadzenButton>
+        </RadzenStack>
+    </RadzenTemplateForm>
+</div>
+@code {
+    Variant variant = Variant.Text;
+    AlertStyle AlertStyleType;
+    string AlertMessage =string.Empty;
+
+    TagDTO model = new TagDTO();
+
+    async  Task OnSubmit(TagDTO model)
+    {
+        try
+        {
+            var response = await _applicationHttpClient
+    .PostJsonAsync<TagDTO, ApiResponse<object>>("Tag", model);
+            var DataResponces =  _mapper.Map<TagDTO>(response.Data);
+             
+            if (response.Success)
+            {
+                AlertStyleType = AlertStyle.Success;
+                AlertMessage = $"Tag Successfully created {DataResponces.TagName}";
+            }
+            else
+            {
+                AlertStyleType = AlertStyle.Danger;
+                AlertMessage = $"Failed to create tag: {DataResponces.TagName}";
+
+            }
+        }
+        catch (Exception e)
+        {
+            
+          
+        }
+ 
+        StateHasChanged();
+    }
+
+    void OnInvalidSubmit(FormInvalidSubmitEventArgs args)
+    {
+       // console.Log($"InvalidSubmit: {JsonSerializer.Serialize(args, new JsonSerializerOptions() { WriteIndented = true })}");
+    }
+}

@@ -1,8 +1,56 @@
 ﻿@page "/"
 @using Exchange.UI.Library.Helper.NavigationMenu;
 <PageTitle>Home</PageTitle>
+@using Microsoft.AspNetCore.Components.Authorization;
+@using Exchange.UI.Library.Helper.StateProviderHelper
 @inherits BarterBaseComponet<Home>
+@inject CustomAuthenticationStateProvider AuthenticationStateProvider
+
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
+<Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+
+    <Authorized>
+        <h1>See this</h1>
+
+
+    </Authorized>
+  
+
+    <NotAuthorized>
+
+        <h1>No Auth this</h1>
+
+    </NotAuthorized>
+</Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+
+@code{
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+    await    AuthenticationStateProvider.NotifyAuthenticationStateChanged();
+
+        if (user.Identity.IsAuthenticated)
+        {
+            Console.WriteLine("User is authenticated");
+        }
+        else
+        {
+            Console.WriteLine("User is not authenticated");
+        }
+        this.StateHasChanged();
+    }
+  
+    protected override bool ShouldRender()
+    {
+        return true;
+    }
+
+    protected override async Task OnInitializedAsync(){
+
+    
+    }
+}

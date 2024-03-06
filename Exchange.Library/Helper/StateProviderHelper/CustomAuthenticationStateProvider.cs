@@ -28,22 +28,33 @@ namespace Exchange.UI.Library.Helper.StateProviderHelper
             _httpClient = httpClient;
             _localStorageService = localStorageService;
         }
-
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = await _localStorageService.GetItemAsStringAsync("token");
+            string token = null;
 
-           // var token = await _localStorageService.GetItemAsync<TokenResponse>("token");
-            if (token == null)
+            try
             {
-                if (string.IsNullOrEmpty(token))
-                    return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                token = await _localStorageService.GetItemAsStringAsync("token");
+            }
+            catch (InvalidOperationException)
+            {
+                // Pre-rendering phase, JavaScript interop not available
+                // Handle accordingly, possibly by assuming anonymous user state
+            }
 
+            if (string.IsNullOrEmpty(token))
+            {
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
 
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt")));
         }
-
+       
+        public async Task NotifyAuthenticationStateChanged()
+        {
+            var authState = await  GetAuthenticationStateAsync(); // Call your overridden method
+              NotifyAuthenticationStateChanged(Task.FromResult(authState));
+        }
         private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var claims = new List<Claim>();
@@ -52,7 +63,11 @@ namespace Exchange.UI.Library.Helper.StateProviderHelper
             var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
 
             keyValuePairs.TryGetValue(ClaimTypes.Role, out object roles);
-
+            //if (keyValuePairs.TryGetValue("exp", out object expValue) && expValue is long exp)
+            //{
+            //    var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(exp);
+            //    return dateTimeOffset.UtcDateTime <= DateTime.UtcNow;
+            //}
             if (roles != null)
             {
                 if (roles.ToString().Trim().StartsWith("["))

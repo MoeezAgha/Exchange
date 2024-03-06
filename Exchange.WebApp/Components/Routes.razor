@@ -1,34 +1,13 @@
-﻿
-<Router AppAssembly="@typeof(Program).Assembly"
-        AdditionalAssemblies="@_exterAssemblies">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <LayoutView Layout="@typeof(Layout.MainLayout)">
-            <p>Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+﻿@using Exchange.WebApp.Components.Layout
+@using Microsoft.AspNetCore.Components.Authorization
+@using Exchange.UI.Library.Helper.StateProviderHelper;
+@inject CustomAuthenticationStateProvider AuthenticationStateProvider;
+<CascadingAuthenticationState>
 
-
-@code{
-    public List<System.Reflection.Assembly> _exterAssemblies = new List<System.Reflection.Assembly>
-    {
-    typeof(TagComponent).Assembly
-
-
-    };
- 
-
-}
-
-@* 
-
-﻿<Router AppAssembly="@typeof(App).Assembly">
+<Router AppAssembly="@typeof(App).Assembly"  AdditionalAssemblies="@_exterAssemblies">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+          
             <NotAuthorized>
                 <h1>Sorry</h1>
                 <p>You're not authorized to reach this page.</p>
@@ -38,6 +17,8 @@
                 <h1>Authentication in progress</h1>
                 <p>Only visible while authentication is in progress.</p>
             </Authorizing>
+
+        
         </AuthorizeRouteView>
     </Found>
     <NotFound>
@@ -48,4 +29,21 @@
             </LayoutView>
         </CascadingAuthenticationState>
     </NotFound>
-</Router> *@
+</Router> 
+</CascadingAuthenticationState>
+@code{
+    public List<System.Reflection.Assembly> _exterAssemblies = new List<System.Reflection.Assembly>
+    {
+    typeof(TagComponent).Assembly
+
+
+    };
+
+ 
+
+
+}
+
+
+
+﻿
