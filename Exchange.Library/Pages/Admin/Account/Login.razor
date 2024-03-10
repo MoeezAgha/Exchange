@@ -1,8 +1,9 @@
 ﻿@page "/login"
 
-@inherits BarterBaseComponet<Login>
+@inherits BarterBaseComponent<Login>
 @using Exchange.UI.Library.Helper.StateProviderHelper;
-@inject CustomAuthenticationStateProvider CustomAuthenticationStateProvider;
+ @using Exchange.Library.DataTransferObject.Account;
+
 
 <h3>Login</h3>
 <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12" style="max-width: 600px;">
@@ -34,18 +35,18 @@
 
     public async Task OnLogin(LoginArgs loginArgs)
     {
-        var authStatez = await CustomAuthenticationStateProvider.GetAuthenticationStateAsync();
+        var authStatez = await _customAuthenticationStateProvider.GetAuthenticationStateAsync();
         var userz = authStatez.User;
 
-        var response = await _applicationHttpClient
+        var response = await ApplicationHttpClient 
         .PostJsonAsync<LoginViewModel, TokenResponse>("Authentication/login", loginModel);
 
         if (response.statusCode == HttpStatusCode.OK)
         {
-            await LocalStorageService.SetItemAsync("token", response.Data.Token);
+            await _localStorageService.SetItemAsync("token", response.Data.Token);
             _navigationMenuSeriveEvent.RefreshNavMenuChanges();
-            await CustomAuthenticationStateProvider.NotifyAuthenticationStateChanged();
-            var authState = await CustomAuthenticationStateProvider.GetAuthenticationStateAsync();
+            await _customAuthenticationStateProvider.NotifyAuthenticationStateChanged();
+            var authState = await _customAuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
             if (authState.User.Identity.IsAuthenticated)
             {

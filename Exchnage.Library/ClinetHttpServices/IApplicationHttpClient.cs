@@ -1,4 +1,4 @@
-﻿namespace Exchnage.Library.ClinetHttpServices
+﻿namespace Exchange.Library.ClinetHttpServices
 {
     public interface IApplicationHttpClient
     {

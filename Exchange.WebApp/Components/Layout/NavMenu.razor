@@ -2,162 +2,172 @@
 @using Exchange.UI.Library.Helper.NavigationMenu
 @using Exchange.UI.Library.Helper.StateProviderHelper
 @rendermode InteractiveServer
-@using Microsoft.AspNetCore.Components.Authorization;
-@using System.Security.Claims;
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using Exchange.Library.ClinetHttpServices
+@using Exchange.Library.DataTransferObject
+@using Radzen.Blazor
 @inject NavigationMenuService NavigationMenuService
-@inject ApplicationHttpClient ApplicationHttpClient;
-@inherits BarterBaseComponet<NavMenu>
+@inject ApplicationHttpClient ApplicationHttpClient
+@inherits BarterBaseComponent<NavMenu>
 
 <div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Exchange.WebApp</a>
-    </div>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="">Exchange.WebApp</a>
+  </div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
-
-
-
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-      
 
-        <Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+  <RadzenPanelMenu Style="width:300px"  Multiple="false">
+    <RadzenPanelMenuItem Text="Take Me Home" Icon="dashboard" IconColor="@Colors.Green.Accent2" Path="/">
+    </RadzenPanelMenuItem>
+  </RadzenPanelMenu>
 
-            <Authorized>
-
-                @if (navMenuItems != null && isAuthenticated)
-                {
-                    @foreach (var item in navMenuItems)
-                    {
-                        <div class="nav-item px-3">
-                            <NavLink class="nav-link" href="@item.ParentMenu" Match="NavLinkMatch.All">
-                                <span class="@item.Icon"></span> @item.Name
-                            </NavLink>
-                        </div>
-                    }
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" onclick="@OnLoginOff" href="login" Match="NavLinkMatch.All">
-                            <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Log Out
-                        </NavLink>
-                    </div>
-
-
-                }
-            </Authorized>
-
-
-            <NotAuthorized>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
-                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Login
-                    </NavLink>
-                </div>
-
-            </NotAuthorized>
-        </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
-
-@* 
-
-        @if (isAuthenticated)
+  <AuthorizeView>
+    <Authorized>
+      @if (navMenuItems != null && isAuthenticated)
+      {
+        @foreach (var item in navMenuItems.Where(menu => menu.ParentMenuId == null))
         {
-                  <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home1
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
-                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Login1
-                </NavLink>
-            </div>
-
-
+          <RadzenPanelMenu Style="width:300px" Multiple="true">
+            @if (item.SubMenus?.Any() == true)
+            {
+              <RadzenPanelMenuItem Text="@item.Name" Icon="@item.Icon" IconColor="@Colors.Blue.Accent1" Path="@item.Route">
+                @foreach (var subItem in item.SubMenus)
+                {
+                  <RadzenPanelMenuItem Text="@subItem.Name" Path="@subItem.Route" Icon="@subItem.Icon"></RadzenPanelMenuItem>
+                }
+              </RadzenPanelMenuItem>
+            }
+          </RadzenPanelMenu>
         }
- *@
-          
-        
 
-        
+        <RadzenPanelMenu Style="width:300px" Multiple="true">
+          <RadzenPanelMenuItem Text="Log Out" Icon="lock_outline" IconColor="@Colors.Red.Accent1" Click="@OnLoginOff">
+          </RadzenPanelMenuItem>
+        </RadzenPanelMenu>
+      }
+    </Authorized>
 
-
-
-        
-    </nav>
+    <NotAuthorized>
+      <RadzenPanelMenu Style="width:300px" Multiple="true">
+        <RadzenPanelMenuItem Path="login" Text="Login " Icon="lock_open">
+        </RadzenPanelMenuItem>
+      </RadzenPanelMenu>
+    </NotAuthorized>
+  </AuthorizeView>
 </div>
 
 @code {
-    private bool isAuthenticated = false;
-
-    [Inject]
-    public NavigationManager _navigationManager { get; set; }
-    public List<NavMenuDTO> navMenuItems { get; set; } = new List<NavMenuDTO>();
 
 
-    [Inject]
-    public NavigationMenuSeriveEvent _navigationMenuSeriveEvent { get; set; }
+ 
+  private HashSet<int> visibleSubMenus = new HashSet<int>();
+  public List<NavMenuDTO> navMenuItems { get; set; } = new List<NavMenuDTO>();
+  private bool isAuthenticated = false;
 
+  [Inject]
+  public NavigationManager _navigationManager { get; set; }  
+  [Inject]
+  public NavigationMenuSeriveEvent _navigationMenuSeriveEvent { get; set; }
 
-    protected override async Task OnInitializedAsync()
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <returns></returns>
+  protected override async Task OnInitializedAsync()
+  {
+    _navigationMenuSeriveEvent.RefreshTheNavMenuEvent += UpdateTheNavMenu;
+  }
+
+  /// <summary>
+  /// 
+  /// </summary>
+  private async void UpdateTheNavMenu()
+  {
+    var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    isAuthenticated = authstate.User.Identity.IsAuthenticated;
+    if (isAuthenticated)
     {
-
-        _navigationMenuSeriveEvent.RefreshTheNavMenuEvent += UpdateTheNavMenu;
-
+      navMenuItems = await NavigationMenuService.GetNavMenuItemsAsync();
     }
+    this.StateHasChanged();
+  }
+  
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="firstRender"></param>
+  /// <returns></returns>
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
 
-    private async void UpdateTheNavMenu()
+    var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    isAuthenticated = authstate.User.Identity.IsAuthenticated;
+    if (isAuthenticated)
     {
-        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        isAuthenticated = authstate.User.Identity.IsAuthenticated;
-
-        if (isAuthenticated)
-        {
-            navMenuItems = await NavigationMenuService.GetNavMenuItemsAsync();
-        }
-        this.StateHasChanged();
-
+      navMenuItems = await NavigationMenuService.GetNavMenuItemsAsync();
     }
+    this.StateHasChanged();
+  }
 
-    public void Dispose()
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <returns></returns>
+  public async Task OnLoginOff()
+  {
+
+    await  _localStorageService.RemoveItemAsync("token");
+
+    // Create a new authentication state with an unauthenticated user
+    var authState = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
+
+    // Cast to CustomAuthenticationStateProvider to access the NotifyAuthenticationStateChanged method
+    if (AuthenticationStateProvider is CustomAuthenticationStateProvider customAuthStateProvider)
     {
-        _navigationMenuSeriveEvent.RefreshTheNavMenuEvent -= UpdateTheNavMenu;
+      await AuthenticationStateProvider.NotifyAuthenticationStateChanged();
     }
+    UpdateTheNavMenu();
+    _navigationManager.NavigateTo("/",true);
+    //this.StateHasChanged();
+  }
 
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="menuId"></param>
+  /// <returns></returns>
+  private bool IsSubMenuVisible(int menuId)
+  {
+    return visibleSubMenus.Contains(menuId);
+  }
 
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="menuId"></param>
+  private void ToggleSubMenu(int menuId)
+  {
+    if (visibleSubMenus.Contains(menuId))
     {
-
-        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        isAuthenticated = authstate.User.Identity.IsAuthenticated;
-        if (isAuthenticated)
-        {
-            navMenuItems = await NavigationMenuService.GetNavMenuItemsAsync();
-        }
-        this.StateHasChanged();
+      visibleSubMenus.Remove(menuId);
     }
-    public async Task OnLoginOff()
+    else
     {
-
-        await   LocalStorageService.RemoveItemAsync("token");
-
-        // Create a new authentication state with an unauthenticated user
-        var authState = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
-
-        // Cast to CustomAuthenticationStateProvider to access the NotifyAuthenticationStateChanged method
-        if (AuthenticationStateProvider is CustomAuthenticationStateProvider customAuthStateProvider)
-        {
-          await  AuthenticationStateProvider.NotifyAuthenticationStateChanged();
-        }
-        UpdateTheNavMenu();
-        _navigationManager.NavigateTo("/",true);
-        //this.StateHasChanged();
+      visibleSubMenus.Add(menuId);
     }
+  }
+
+   /// <summary>
+  /// 
+  /// </summary>
+  public void Dispose()
+  {
+    _navigationMenuSeriveEvent.RefreshTheNavMenuEvent -= UpdateTheNavMenu;
+  }
 }
+

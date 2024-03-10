@@ -1,14 +1,13 @@
 ﻿using Blazored.LocalStorage;
-using Exchange.Library.DataTransferObject;
-
-using Exchnage.Library.ClinetHttpServices;
-using Exchnage.Library.DataTransferObject.Account;
+using Exchange.Library.DataTransferObject.Account;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Exchange.Library.DataTransferObject;
+using Exchange.Library.ClinetHttpServices;
 
 namespace Exchange.UI.Library.Helper.NavigationMenu
 {

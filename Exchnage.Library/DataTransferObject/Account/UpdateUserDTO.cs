@@ -1,4 +1,4 @@
-﻿namespace Exchnage.Library.DataTransferObject.Account
+﻿namespace Exchange.Library.DataTransferObject.Account
 {
     public class UpdateUserDTO
     {

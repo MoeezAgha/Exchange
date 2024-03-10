@@ -1,4 +1,4 @@
-﻿using Exchange.BAL.Services.AutoMapper;
+﻿
 using Exchange.BAL.Services.Contracts;
 using Exchange.BAL.Services.Repositories;
 using Exchange.DAL.Models;

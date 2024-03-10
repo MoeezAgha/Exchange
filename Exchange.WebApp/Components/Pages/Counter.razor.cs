@@ -2,7 +2,7 @@
 
 namespace Exchange.WebApp.Components.Pages
 {
-    public partial class Counter : BarterBaseComponet<Counter> 
+    public partial class Counter : BarterBaseComponent<Counter> 
     {
         //[Inject]
         //public IHttpClientFactory ClientFactory { get; set; }
@@ -13,7 +13,7 @@ namespace Exchange.WebApp.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var response = await _applicationHttpClient.GetJsonAsync<List<CategoryDTO>>("Category");
+            var response = await ApplicationHttpClient .GetJsonAsync<List<CategoryDTO>>("Category");
 
             if (response.statusCode == HttpStatusCode.OK)
             {

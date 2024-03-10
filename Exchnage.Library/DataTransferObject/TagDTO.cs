@@ -9,10 +9,9 @@ namespace Exchange.Library.DataTransferObject
     {
 
         public int TagId { get; set; }
-        [StringLength(30)]
 
         public string TagName { get; set; }
-        
+
         public string? CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public string? ModifiedBy { get; set; }

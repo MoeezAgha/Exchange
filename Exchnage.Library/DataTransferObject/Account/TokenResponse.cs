@@ -1,6 +1,4 @@
-﻿using Exchange.Library.DataTransferObject;
-
-namespace Exchnage.Library.DataTransferObject.Account
+﻿namespace Exchange.Library.DataTransferObject.Account
 {
     [JsonSerializable(typeof(TokenResponse))]
     public class TokenResponse

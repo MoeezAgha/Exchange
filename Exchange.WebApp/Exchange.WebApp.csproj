@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Exchange.BAL\Exchange.BAL.csproj" />
     <ProjectReference Include="..\Exchange.Library\Exchange.UI.Library.csproj" />
+    <ProjectReference Include="..\Exchnage.Library\Exchange.Library.csproj" />
   </ItemGroup>
 
 </Project>

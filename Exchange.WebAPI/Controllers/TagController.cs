@@ -1,4 +1,5 @@
-﻿using Exchange.BAL.Services.Contracts;
+﻿using AutoMapper;
+using Exchange.BAL.Services.Contracts;
 using Exchange.DAL.Models;
 using Exchange.Library.DataTransferObject;
 using Microsoft.AspNetCore.Authorization;
@@ -15,11 +16,13 @@ namespace Exchange.WebAPI.Controllers
     {
         private readonly IRepository<Tag> _repository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public TagController(IRepository<Tag> repository, IUnitOfWork unitOfWork)
+        public TagController(IRepository<Tag> repository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
@@ -50,10 +53,10 @@ namespace Exchange.WebAPI.Controllers
 
             await _repository.AddAsync(tag);
             await _unitOfWork.SaveChangesAsync();
-            
+           
 
             // Return a 201 Created response with a location header pointing to the new resource
-            return CreatedAtAction(nameof(GetId), new { id = tag.TagId },tag);
+            return CreatedAtAction(nameof(GetId), new { id = tag.TagId }, _mapper.Map<TagDTO>(tag));
         }
 
 

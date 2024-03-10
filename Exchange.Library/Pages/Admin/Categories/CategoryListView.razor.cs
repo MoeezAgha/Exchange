@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Exchange.UI.Library.Pages.Admin.Categories
 {
-    public partial class CategoriesComponent : BarterBaseComponet<CategoriesComponent>
+    public partial class CategoryListView : BarterBaseComponent<CategoryListView>
     {
         public List<CategoryDTO> _categoryDTO = new(); // Initialize the list
 
@@ -17,7 +17,7 @@ namespace Exchange.UI.Library.Pages.Admin.Categories
         {
 
             
-            var response = await _applicationHttpClient.GetJsonAsync<List<CategoryDTO>>("Category?includeProducts=false");
+            var response = await ApplicationHttpClient .GetJsonAsync<List<CategoryDTO>>("Category?includeProducts=false");
 
             if (response.statusCode == HttpStatusCode.OK)
             {

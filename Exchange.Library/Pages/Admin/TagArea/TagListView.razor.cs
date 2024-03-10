@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Exchange.UI.Library.Pages.Admin.TagArea
 {
 
-    public partial class TagComponent : BarterBaseComponet<TagComponent>
+    public partial class TagListView : BarterBaseComponent<TagListView>
     {
         //override OnInitialized
 
@@ -18,7 +18,7 @@ namespace Exchange.UI.Library.Pages.Admin.TagArea
 
         protected override async Task OnInitializedAsync()
         {
-            var response = await _applicationHttpClient.GetJsonAsync<List<TagDTO>>("Tag?includeProducts=false");
+            var response = await ApplicationHttpClient.GetJsonAsync<List<TagDTO>>("Tag?includeProducts=false");
 
             if (response.statusCode == HttpStatusCode.OK)
             {
@@ -26,5 +26,17 @@ namespace Exchange.UI.Library.Pages.Admin.TagArea
             }
             StateHasChanged();
         }
+
+        bool isLoading = false;
+
+        async Task ShowLoading()
+        {
+            isLoading = true;
+
+            await Task.Yield();
+
+            isLoading = false;
+        }
+
     }
 }

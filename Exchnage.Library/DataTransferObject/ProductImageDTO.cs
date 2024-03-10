@@ -1,5 +1,4 @@
-﻿
-namespace Exchange.Library.DataTransferObject
+﻿namespace Exchange.Library.DataTransferObject
 {
     [JsonSerializable(typeof(ProductImageDTO))]
     public class ProductImageDTO : ProductImage

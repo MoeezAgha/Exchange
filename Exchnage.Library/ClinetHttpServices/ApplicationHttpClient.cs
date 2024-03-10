@@ -1,11 +1,12 @@
-﻿using Blazored.LocalStorage;
+﻿using Azure.Core;
+using Blazored.LocalStorage;
 using Exchange.Library.DataTransferObject;
-using Exchnage.Library.DataTransferObject.Account;
+using Exchange.Library.DataTransferObject.Account;
 using Microsoft.JSInterop;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace Exchnage.Library.ClinetHttpServices
+namespace Exchange.Library.ClinetHttpServices
 {
     public class ApplicationHttpClient : IApplicationHttpClient
     {
@@ -21,37 +22,51 @@ namespace Exchnage.Library.ClinetHttpServices
 
         private async Task<string> GetTokenAsync()
         {
-          //  return new TokenResponse { Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1IiwidW5pcXVlX25hbWUiOiJ5YWhvbzIyMiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InlhaG9vMjIyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MzMyNjYwMDQ1MzQsImlzcyI6InlvdXItaXNzdWVyIiwiYXVkIjoieW91ci1hdWRpZW5jZSJ9.EKI4i83W30eycZ81VZCzWjRxbIAYmx9EvmpGvdivy3E" };
+            //  return new TokenResponse { Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1IiwidW5pcXVlX25hbWUiOiJ5YWhvbzIyMiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InlhaG9vMjIyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MzMyNjYwMDQ1MzQsImlzcyI6InlvdXItaXNzdWVyIiwiYXVkIjoieW91ci1hdWRpZW5jZSJ9.EKI4i83W30eycZ81VZCzWjRxbIAYmx9EvmpGvdivy3E" };
             if (token == null)
             {
-               // _token =  await _localStorageService.GetItemAsync<TokenResponse>("token");
-                 token = JsonSerializer.Deserialize<string>(await _localStorageService.GetItemAsStringAsync("token"));
-             //   _token = JsonSerializer.Deserialize<TokenResponse>(tokenJson);
+                // _token =  await _localStorageService.GetItemAsync<TokenResponse>("token");
+                token = JsonSerializer.Deserialize<string>(await _localStorageService.GetItemAsStringAsync("token"));
+                //   _token = JsonSerializer.Deserialize<TokenResponse>(tokenJson);
 
-             //   token = await _localStorageService.GetItemAsStringAsync("token");
+                //   token = await _localStorageService.GetItemAsStringAsync("token");
             }
             return token;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="relativeUrl"></param>
+        /// <returns></returns>
         public async Task<ApiResponse<T>> GetJsonAsync<T>(string relativeUrl)
         {
             try
             {
 
-                var token = await  GetTokenAsync();
-
+                var token = await GetTokenAsync();
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await _httpClient.GetAsync(relativeUrl);
-            
+                using (var response = await _httpClient.GetAsync(relativeUrl))
+                {
 
-                response.EnsureSuccessStatusCode();
-                var data = await response.Content.ReadFromJsonAsync<T>();
-                return new ApiResponse<T> { Success = true, Data = data, statusCode = response.StatusCode };
+                    response.EnsureSuccessStatusCode();
+                    var data = await response.Content.ReadFromJsonAsync<T>();
+                    return new ApiResponse<T> { Success = true, Data = data, statusCode = response.StatusCode };
+                }
+
+
             }
             catch (Exception ex)
             {
                 return new ApiResponse<T> { Success = false, Message = ex.Message };
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="relativeUrl"></param>
+        /// <returns></returns>
         public async Task<ApiResponse<T>> Get<T>(string relativeUrl)
         {
             var response = await _httpClient.GetAsync(relativeUrl);
@@ -59,23 +74,25 @@ namespace Exchnage.Library.ClinetHttpServices
             var data = await response.Content.ReadFromJsonAsync<T>();
             return new ApiResponse<T> { Success = true, Data = data };
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TRequest"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="relativeUrl"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<ApiResponse<T>> PostJsonAsync<TRequest, T>(string relativeUrl, TRequest request)
         {
             try
             {
-    
                 using (var response = await _httpClient.PostAsJsonAsync(relativeUrl, request))
                 {
                     response.EnsureSuccessStatusCode();
-                    var apiResponse = await response.Content.ReadFromJsonAsync<object>();
-                    var apiResponse22 = await response.Content.ReadFromJsonAsync<TagDTO>();
-
-                    var z = apiResponse;
                     return new ApiResponse<T>
                     {
                         Success = response.IsSuccessStatusCode,
-                        //Data = apiResponse,
+                        Data = await response.Content.ReadFromJsonAsync<T>(),
                         statusCode = response.StatusCode
                     };
                 }

@@ -1,6 +1,6 @@
 ﻿using Exchange.BAL.Services.JWTConfiguration;
 using Exchange.DAL.Models;
-using Exchnage.Library.DataTransferObject.Account;
+using Exchange.Library.DataTransferObject.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

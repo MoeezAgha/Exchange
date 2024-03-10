@@ -16,6 +16,8 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Exchange.BAL.Services.JWTConfiguration;
 using Exchange;
+using Exchange.Library.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -130,8 +132,9 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 #region ConnectionString
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ExchangeWebAPIContext")));
-#endregion 
+#endregion
 
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 //builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
 //  .AddEntityFrameworkStores<ApplicationDbContext>();

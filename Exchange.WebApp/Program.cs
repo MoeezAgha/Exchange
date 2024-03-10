@@ -1,20 +1,19 @@
 using Blazored.LocalStorage;
 using Exchange.BAL.Services;
-using Exchange.BAL.Services.AutoMapper;
+
 using Exchange.Library.Helper;
 using Exchange.UI.Library.Helper.NavigationMenu;
 using Exchange.UI.Library.Helper.StateProviderHelper;
 using Exchange.WebApp;
 using Exchange.WebApp.Components;
-using Exchnage.Library.ClinetHttpServices;
-
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 using Radzen;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
+using Exchange.Library.Services;
+using Exchange.UI.Library;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +35,7 @@ var jsonSerializerOptions = new JsonSerializerOptions
 };
 
 builder.Services.AddRadzenComponents();
+
 
 
 builder.Services.AddBlazoredLocalStorage(config =>
@@ -67,6 +67,10 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStat
 builder.Services.AddScoped<NavigationMenuService>();
 builder.Services.AddScoped<NavigationMenuSeriveEvent>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+
+#region Register Lib services
+builder.Services.AddRegisterServicesUIExtensions();
+#endregion
 var app = builder.Build();
 
 
@@ -80,6 +84,7 @@ if (!app.Environment.IsDevelopment())
 
 
 
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -89,7 +94,7 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
 
-    .AddAdditionalAssemblies(typeof(TagComponent).Assembly);
+    .AddAdditionalAssemblies(typeof(TagForm).Assembly);
 
 
 app.Run();

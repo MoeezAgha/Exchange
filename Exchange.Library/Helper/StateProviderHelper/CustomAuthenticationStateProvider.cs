@@ -1,6 +1,6 @@
 ﻿using Azure;
 using Blazored.LocalStorage;
-using Exchnage.Library.DataTransferObject.Account;
+using Exchange.Library.DataTransferObject.Account;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using System;

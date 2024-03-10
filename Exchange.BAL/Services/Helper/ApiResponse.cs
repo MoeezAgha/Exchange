@@ -1,4 +1,4 @@
-﻿namespace Exchnage.Library.Helper
+﻿namespace Exchange.Library.Helper
 {
     public class ApiResponse<T>
     {

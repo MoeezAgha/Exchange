@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using Exchange.Library.DataTransferObject;
 
-namespace Exchnage.Library.DataTransferObject.Account
+namespace Exchange.Library.DataTransferObject.Account
 {
     [JsonSerializable(typeof(LoginViewModel))]
     public class LoginViewModel

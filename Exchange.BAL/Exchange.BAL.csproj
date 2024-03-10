@@ -15,8 +15,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Exchange.DAL\Exchange.DAL.csproj" />
-    <ProjectReference Include="..\Exchnage.Library\Exchnage.Library.csproj" />
+    <ProjectReference Include="..\Exchnage.Library\Exchange.Library.csproj" />
 
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\AutoMapper\" />
   </ItemGroup>
 
 </Project>

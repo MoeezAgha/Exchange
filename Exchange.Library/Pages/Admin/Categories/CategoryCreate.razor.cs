@@ -11,7 +11,7 @@
 
 //namespace Exchange.UI.Library.Pages.Admin.Categories
 //{
-//    public partial class CategoryCreate : BarterBaseComponet<CategoryCreate>
+//    public partial class CategoryCreate : BarterBaseComponent<CategoryCreate>
 //    {
        
      
@@ -23,8 +23,8 @@
 //        public async Task HandleSubmit()
 //        {
 //            var a = form.Model as Category;
-//            //  var z = await _applicationHttpClient.PostJsonAsync<Category>("Category", form.Model as Category);
-//            var z = await _applicationHttpClient.PostJsonAsync<Category, Category>("Category", form.Model as Category);
+//            //  var z = await ApplicationHttpClient .PostJsonAsync<Category>("Category", form.Model as Category);
+//            var z = await ApplicationHttpClient .PostJsonAsync<Category, Category>("Category", form.Model as Category);
 
 
 //        }

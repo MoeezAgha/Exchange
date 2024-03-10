@@ -1,5 +1,4 @@
-﻿
-namespace Exchange.Library.DataTransferObject
+﻿namespace Exchange.Library.DataTransferObject
 {
     public class ExchangeOfferDTO : ExchangeOffer
     {

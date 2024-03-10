@@ -1,0 +1,43 @@
+﻿ @page "/tags"
+
+@using Exchange.UI.Library.Helper.BaseComponets
+@using Microsoft.VisualBasic
+
+@rendermode RenderMode.InteractiveServer
+@inherits BarterBaseComponent<TagListView>
+
+<h3>Tag</h3>
+
+<RadzenButton ButtonType=ButtonType.Button ButtonStyle="ButtonStyle.Primary" Click="@CreateTag">Create Tag</RadzenButton>
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced"
+                AllowGrouping="true" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left"
+                Data="@_tagDTO" TItem="TagDTO" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" ShowPagingSummary="true"
+                IsLoading=@isLoading Sort="@ShowLoading" Page="@ShowLoading" Group="@ShowLoading" Filter="@ShowLoading">
+    <Columns>
+   
+        <RadzenDataGridColumn TItem="TagDTO" Property="@nameof(TagDTO.TagId)" Title="@nameof(TagDTO.TagId)" Frozen="true" />
+        <RadzenDataGridColumn TItem="TagDTO" Property="@nameof(TagDTO.TagName)" Title="@nameof(TagDTO.TagName)" />
+        <RadzenDataGridColumn TItem="TagDTO" Property="@nameof(TagDTO.CreatedBy)" Title="@nameof(TagDTO.CreatedBy)"  />
+        <RadzenDataGridColumn TItem="TagDTO" Property="@nameof(TagDTO.TagId)" Title="@nameof(TagDTO.TagId)" Frozen="true" />
+        <RadzenDataGridColumn TItem="TagDTO" Context="true">
+            <Template Context="tag">
+                <RadzenButton ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Secondary" Click="@(() => EditTag(tag.TagId))">Edit</RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code{
+    void EditTag(int tagId)
+    {
+        _navigationManager.NavigateTo($"/tag/{tagId}");
+
+    }
+    void CreateTag()
+    {
+        _navigationManager.NavigateTo("tag/create");
+    }
+
+}
+
