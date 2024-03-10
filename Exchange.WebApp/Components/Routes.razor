@@ -1,4 +1,5 @@
-﻿@using Exchange.WebApp.Components.Layout
+﻿@using Exchange.UI.Library.Pages
+@using Exchange.WebApp.Components.Layout
 @using Microsoft.AspNetCore.Components.Authorization
 @using Exchange.UI.Library.Helper.StateProviderHelper;
 @using Exchange.UI.Library.Services;
@@ -10,7 +11,8 @@
     <CascadingAuthenticationState>
         <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="@_exterAssemblies">
             <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <LoadingWrapper>
+                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                     <NotAuthorized>
                         <h1>Sorry</h1>
                         <p>You're not authorized to reach this page.</p>
@@ -24,6 +26,8 @@
                         </div>
                     </Authorizing>
                 </AuthorizeRouteView>
+        </LoadingWrapper>
+        
             </Found>
             <NotFound>
                 <CascadingAuthenticationState>

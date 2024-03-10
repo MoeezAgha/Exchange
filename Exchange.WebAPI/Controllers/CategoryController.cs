@@ -12,7 +12,7 @@ namespace Exchange.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   [Authorize]
+  // [Authorize]
     public class CategoryController(IUnitOfWork unitOfWork, IServiceProvider serviceProvider, AutoMapper.IMapper mapper) : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));

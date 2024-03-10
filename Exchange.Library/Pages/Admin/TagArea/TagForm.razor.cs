@@ -26,7 +26,7 @@ namespace Exchange.UI.Library.Pages.Admin.TagArea
         {
             var z = GetType().Name;
             if (TagId is not null) {
-                var tagResponse = await ApplicationHttpClient .GetJsonAsync<TagDTO>($"tag/{TagId}");
+                var tagResponse = await ApplicationHttpClient.GetJsonAsync<TagDTO>($"tag/{TagId}");
                 model =  tagResponse.Data;
             }
           //  return base.OnInitializedAsync();

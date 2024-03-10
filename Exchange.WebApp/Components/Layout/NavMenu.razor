@@ -13,7 +13,10 @@
 
 <div class="top-row ps-3 navbar navbar-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="">Exchange.WebApp</a>
+   <a class="navbar-brand" href="/">
+       <img src="logo.png" alt="Company Logo" style="width: 48px;height: 40px;     margin-left: -21px;">
+       Barter</a>
+     
   </div>
 </div>
 
@@ -21,7 +24,7 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
 
-  <RadzenPanelMenu Style="width:300px"  Multiple="false">
+  <RadzenPanelMenu Style="width:250px"  Multiple="false">
     <RadzenPanelMenuItem Text="Take Me Home" Icon="dashboard" IconColor="@Colors.Green.Accent2" Path="/">
     </RadzenPanelMenuItem>
   </RadzenPanelMenu>
@@ -32,7 +35,7 @@
       {
         @foreach (var item in navMenuItems.Where(menu => menu.ParentMenuId == null))
         {
-          <RadzenPanelMenu Style="width:300px" Multiple="true">
+          <RadzenPanelMenu Style="width:250px" Multiple="true">
             @if (item.SubMenus?.Any() == true)
             {
               <RadzenPanelMenuItem Text="@item.Name" Icon="@item.Icon" IconColor="@Colors.Blue.Accent1" Path="@item.Route">
@@ -45,7 +48,7 @@
           </RadzenPanelMenu>
         }
 
-        <RadzenPanelMenu Style="width:300px" Multiple="true">
+        <RadzenPanelMenu Style="width:250px" Multiple="true">
           <RadzenPanelMenuItem Text="Log Out" Icon="lock_outline" IconColor="@Colors.Red.Accent1" Click="@OnLoginOff">
           </RadzenPanelMenuItem>
         </RadzenPanelMenu>
@@ -53,7 +56,7 @@
     </Authorized>
 
     <NotAuthorized>
-      <RadzenPanelMenu Style="width:300px" Multiple="true">
+      <RadzenPanelMenu Style="width:250px" Multiple="true">
         <RadzenPanelMenuItem Path="login" Text="Login " Icon="lock_open">
         </RadzenPanelMenuItem>
       </RadzenPanelMenu>

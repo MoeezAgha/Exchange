@@ -3,12 +3,71 @@
 <PageTitle>Home</PageTitle>
 @using Microsoft.AspNetCore.Components.Authorization;
 @using Exchange.UI.Library.Helper.StateProviderHelper
+@using Radzen.Blazor
 @inherits BarterBaseComponent<Home>
 @inject CustomAuthenticationStateProvider AuthenticationStateProvider
+@using Radzen;
+@inject IJSRuntime JSRuntime
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<div class="container my-5">
+    <div class="row">
+        <div class="card-container col" @ref="cardContainerRef">
+            <button class="arrow left" @onclick="ScrollLeft">‹</button>
+
+            <!-- Cards start -->
+            @for (int i = 0; i < 10; i++)
+            {
+                <div class="col-md-2">
+                    <div class="card">
+                        <img src="logo.png" class="card-img-top" alt="Barter Logo">
+                        <div class="card-body">
+                            <h5 class="card-title">Card Title</h5>
+                            <p class="card-text">This card has supporting text below.</p>
+                        </div>
+                    </div>
+                </div>
+            }
+            <!-- Cards end -->
+
+            <button class="arrow right" @onclick="ScrollRight">›</button>
+        </div>
+    </div>
+</div>
+
+
+@* <RadzenCard Class="rz-my-12 rz-mx-auto" Style="max-width: 420px">
+    <RadzenStack  JustifyContent="JustifyContent.Start" Gap="1rem" Class="rz-p-4">
+        <RadzenImage Path="logo.png" Style="width: 100px; height: 100px; border-radius: 50%;" />
+        <RadzenStack Gap="0">
+            <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-2 rz-my-0">Employee</RadzenText>
+            <RadzenText TextStyle="TextStyle.Body1"><b>Name</b></RadzenText>
+            <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Company</RadzenText>
+            <RadzenText TextStyle="TextStyle.Body1"><b>Name company</b></RadzenText>
+        </RadzenStack>
+    </RadzenStack>
+    <RadzenCard class="rz-background-color-primary-light rz-shadow-0 rz-border-radius-0 rz-p-8" style="margin: 1rem calc(-1 * var(--rz-card-padding));">
+        <RadzenText TextStyle="TextStyle.H6" class="rz-color-on-primary-light"><strong>Delivery Information</strong></RadzenText>
+        <RadzenRow RowGap="0">
+            <RadzenColumn SizeSM="4">
+                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Country</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>ShipCountry)</b></RadzenText>
+                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">City</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>ShipCity)</b></RadzenText>
+            </RadzenColumn>
+            <RadzenColumn SizeSM="8">
+                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Ship name</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>ShipName)</b></RadzenText>
+                <RadzenText TextStyle="TextStyle.Overline" class="rz-color-on-primary-light rz-display-flex rz-mt-4 rz-mb-0">Freight</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1" class="rz-color-on-primary-light"><b>@String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", 56)</b></RadzenText>
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenCard>
+    <RadzenStack  JustifyContent="JustifyContent.End" Gap="0">
+        <RadzenButton class="rz-text-secondary-color" Text="Cancel" />
+        <RadzenButton  Text="Send" />
+    </RadzenStack>
+</RadzenCard> *@
 
 <Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
 
@@ -27,6 +86,20 @@ Welcome to your new app.
 </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
 
 @code{
+    ElementReference cardContainerRef;
+    int scrollAmount = 255; // You can adjust this value as needed
+
+    async Task ScrollLeft()
+    {
+        await JSRuntime.InvokeVoidAsync("ScrollLeft", cardContainerRef, scrollAmount);
+        StateHasChanged();
+    }
+
+    async Task ScrollRight()
+    {
+        await JSRuntime.InvokeVoidAsync("ScrollRight", cardContainerRef, scrollAmount);
+        StateHasChanged();
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -54,3 +127,71 @@ Welcome to your new app.
     
     }
 }
+
+<style>
+    .card-container {
+        position: relative;
+        display: flex;
+        overflow-x: auto;
+        /* padding-left: 30px; /* Left padding for the left arrow visibility */
+       /* margin-left: calc(10px + 1rem); /* Adjust this based on your sidebar width */
+    }
+
+    .card {
+        flex: 0 0 auto;
+        margin-right: 1rem;
+        transition: transform 0.5s;
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: auto;
+        transition: transform 0.5s;
+        transform: perspective(1000px) rotateY(20);
+    }
+
+    .card:hover .card-img-top {
+        transform: perspective(1000px) rotateY(40deg);
+      
+    }
+
+    .arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        font-size: 24px;
+        cursor: pointer;
+        background: rgba(255,255,255,0.6);
+        border: none;
+    }
+
+    .arrow.left { left: 0; }
+    .arrow.right { right: 0; }
+
+    /* Responsive behavior */
+    @@media (max-width: 576px) {
+        .card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+<script>
+
+    function ScrollLeft(element, width) {
+        element.scrollBy({
+            top: 0,
+            left: width * Math.floor((element.offsetWidth / width))
+        });
+    }
+
+    function ScrollRight(element, width) {
+        element.scrollBy({
+            top: 0,
+            left: -width * Math.floor((element.offsetWidth / width)),
+            behavior: "smooth"
+        })
+    }
+
+
+</script>

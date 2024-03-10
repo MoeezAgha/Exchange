@@ -1,0 +1,16 @@
+﻿@using Exchange.UI.Library.Services
+@inject LoadingService LoadingService
+
+@if (LoadingService.IsLoading)
+{
+    <div class="loading-indicator">Loading...</div>
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}
+

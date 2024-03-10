@@ -8,29 +8,21 @@ namespace Exchange.UI.Library.Services
 {
     public class LoadingService
     {
-        private bool _isLoading = false;
+        public bool IsLoading { get; private set; }
 
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set
-            {
-                _isLoading = value;
-                // Optionally, invoke an event to notify components about the state change
-            }
-        }
+        public event Action OnLoadingStateChanged;
 
-        // Implement methods to set and clear the loading state based on your application's needs
-        public void StartLoading()
-        {
-            IsLoading = true;
-        }
+        public void StartLoading() => UpdateLoadingState(true);
 
-        public void StopLoading()
+        public void StopLoading() => UpdateLoadingState(false);
+
+        private void UpdateLoadingState(bool isLoading)
         {
-            IsLoading = false;
+            IsLoading = isLoading;
+            OnLoadingStateChanged?.Invoke();
         }
     }
+
 
 
 }

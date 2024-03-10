@@ -1,18 +1,33 @@
-﻿@* @page "/categories/create"
+﻿@page "/category/create"
+@page "/category/{categoryId}"
 @using Exchange.UI.Library.Helper.BaseComponets
 @using Microsoft.AspNetCore.Components.Forms
-@using MudBlazor
+
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @rendermode InteractiveServer
 @inherits BarterBaseComponent<CategoryCreate>
 
 <h3>CategoryCreate</h3>
+<RadzenButton ButtonStyle="ButtonStyle.Info" ButtonType=ButtonType.Button Click="@GoBack">Back</RadzenButton>
+<h3>TagCreate</h3>
 
-<MudForm @ref="@form" Model="@model" FormName="CategoryCreateForm">
 
-   
-    <MudTextField T="int" Label="Category Name" @bind-Value="model.CategoryId" ReadOnly="true" Required="true" MaxLength="30" FullWidth />
-    <MudTextField T="string" Label="Category Name" @bind-Value="model.CategoryName" Required="true" MaxLength="30" FullWidth />
+<div Class="rz-p-0 rz-p-md-12">
 
-     <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@HandleSubmit">Order</MudButton>
- </MudForm> *@
+    <RadzenTemplateForm TItem="CategoryDTO" Data=@model Submit=@OnSubmit InvalidSubmit=@OnInvalidSubmit>
+        <RadzenStack Gap="1rem" Class="rz-p-sm-12">
+            <RadzenFormField Text="Tag Name" Variant="@variant">
+                <ChildContent>
+                    <RadzenTextBox Name="FirstName" @bind-Value=@model.CategoryName />
+                </ChildContent>
+                <Helper>
+                    <RadzenRequiredValidator Component="FirstName" Text="First name is required." />
+                </Helper>
+            </RadzenFormField>
+            <RadzenCheckBox Name="IsPublic" @bind-Value=@model.IsPublic />
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+        </RadzenStack>
+    </RadzenTemplateForm>
+
+
+</div>

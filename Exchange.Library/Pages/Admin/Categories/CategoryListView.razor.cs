@@ -17,13 +17,24 @@ namespace Exchange.UI.Library.Pages.Admin.Categories
         {
 
             
-            var response = await ApplicationHttpClient .GetJsonAsync<List<CategoryDTO>>("Category?includeProducts=false");
+            var response = await ApplicationHttpClient.GetJsonAsync<List<CategoryDTO>>("Category?includeProducts=false");
 
             if (response.statusCode == HttpStatusCode.OK)
             {
                 _categoryDTO = response.Data;
             }
             StateHasChanged();
+        }
+
+        bool isLoading = false;
+
+        async Task ShowLoading()
+        {
+            isLoading = true;
+
+            await Task.Yield();
+
+            isLoading = false;
         }
     }
 }
