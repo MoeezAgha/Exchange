@@ -18,21 +18,23 @@ namespace Exchange.Library.ClinetHttpServices
         {
             _httpClient = httpClient;
             _localStorageService = localStorageService;
+            _ = GetTokenAsync();
         }
 
         private async Task<string> GetTokenAsync()
         {
-            //  return new TokenResponse { Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1IiwidW5pcXVlX25hbWUiOiJ5YWhvbzIyMiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InlhaG9vMjIyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MzMyNjYwMDQ1MzQsImlzcyI6InlvdXItaXNzdWVyIiwiYXVkIjoieW91ci1hdWRpZW5jZSJ9.EKI4i83W30eycZ81VZCzWjRxbIAYmx9EvmpGvdivy3E" };
+            
             if (token == null)
             {
                 // _token =  await _localStorageService.GetItemAsync<TokenResponse>("token");
                 token = JsonSerializer.Deserialize<string>(await _localStorageService.GetItemAsStringAsync("token"));
-                //   _token = JsonSerializer.Deserialize<TokenResponse>(tokenJson);
 
-                //   token = await _localStorageService.GetItemAsStringAsync("token");
+                AddAuthorizationHeader(token);
             }
             return token;
         }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -43,9 +45,7 @@ namespace Exchange.Library.ClinetHttpServices
         {
             try
             {
-
-                var token = await GetTokenAsync();
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+              
                 using (var response = await _httpClient.GetAsync(relativeUrl))
                 {
 
@@ -61,6 +61,9 @@ namespace Exchange.Library.ClinetHttpServices
                 return new ApiResponse<T> { Success = false, Message = ex.Message };
             }
         }
+
+    
+
         /// <summary>
         /// 
         /// </summary>
