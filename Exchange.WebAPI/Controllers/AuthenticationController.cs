@@ -1,4 +1,6 @@
-﻿using Exchange.BAL.Services.JWTConfiguration;
+﻿using Exchange.BAL.Services.Contracts;
+using Exchange.BAL.Services.JWTConfiguration;
+using Exchange.BAL.Services.Repositories;
 using Exchange.DAL.Models;
 using Exchange.Library.DataTransferObject.Account;
 using Microsoft.AspNetCore.Authorization;
@@ -25,14 +27,16 @@ namespace Exchange.WebAPI.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         //  private readonly RoleManager<ApplicationUser> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AuthenticationController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IOptions<JwtSetting> jwtSetting)
+        public AuthenticationController(IUnitOfWork unitOfWork,UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IOptions<JwtSetting> jwtSetting)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _jwtSetting = jwtSetting.Value;
             //_roleManager = roleManager;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -40,11 +44,11 @@ namespace Exchange.WebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         /// []
-        /// 
-        [Authorize]
+        
         [HttpGet("HealthCheck")]
         public IActionResult HealthCheck()
         {
+         var bb=   _unitOfWork.ExchangeOffers.GetEx();
             return Ok("Api-running");
         }
         /// <summary>

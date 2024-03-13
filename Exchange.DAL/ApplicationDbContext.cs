@@ -20,7 +20,7 @@ namespace Exchange.DAL
         public DbSet<Category> Categories { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<NavMenu> NavMenu { get; set; }
-
+        public DbSet<ExchangeOffer> ExchangeOffer { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -34,14 +34,19 @@ namespace Exchange.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            // Configuring the one-to-one relationship between Product and AcceptedOffer
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.AcceptedOffer)
+                .WithOne()
+                .HasForeignKey<ExchangeOffer>(e => e.ProductId)
+                .OnDelete(DeleteBehavior.Restrict); // Restricting cascade delete to prevent cycles
 
- 
-
-            //// Configure the one-to-many relationship between Product and ExchangeOffer
-            //modelBuilder.Entity<Product>()
-            //    .HasMany(p => p.ExchangeOffers) // Assuming Product has a collection of ExchangeOffers
-            //    .WithOne(e => e.Product) // Assuming ExchangeOffer has a navigation property to Product
-            //    .HasForeignKey(e => e.ProductId); // Assuming ExchangeOffer has a foreign key property to Product
+            // Configuring the one-to-many relationship between Product and ExchangeOffers
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.ExchangeOffers) // Assuming you have a collection of ExchangeOffers in Product
+                .WithOne(e => e.Product) // Assuming there's an inverse navigation property in ExchangeOffer
+                .HasForeignKey(e => e.ProductId)
+                .OnDelete(DeleteBehavior.Restrict); // Again, restricting cascade delete
 
         }
 

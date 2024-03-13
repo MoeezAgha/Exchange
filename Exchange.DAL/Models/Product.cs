@@ -9,23 +9,25 @@ namespace Exchange.DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int ProductId { get; set; }
-        public string ProductName { get; set; }
+        public required string ProductName { get; set; }
 
-        public string ProductDescription { get; set; }
+        public required string ProductDescription { get; set; }
 
         public string WantDescription { get; set; }
 
         // Other product properties
-        public bool IsPublic { get; set; }
-        public bool IsAcceptedOffer { get; set; }
-      //  public ExchangeOffer? AcceptedOffer { get; set; }
+        public bool IsPublic { get; set; } = false;
+        public int? AcceptedOfferId { get; set; } 
+        public ExchangeOffer? AcceptedOffer { get; set; }
 
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
+
+
         public ICollection<Tag>? Tags { get; set; }
         public ICollection<ProductImage> ProductImages { get; set; }
-        // One product can have many exchange offers
-     //   public ICollection<ExchangeOffer>? ExchangeOffers { get; set; }
+
+        public ICollection<ExchangeOffer>? ExchangeOffers { get; set; }
         public int ProductCreatedByUserId { get; set; } // ForeignKey for ApplicationUser
         public ApplicationUser ProductCreatedByUser { get; set; }
 
@@ -33,5 +35,14 @@ namespace Exchange.DAL.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public string? ModifiedBy { get; set; }
         public DateTime ModifiedDate { get; set; } = DateTime.Now;
+
+        public string ProductUrl
+        {
+            get
+            {
+                // Convert ProductName to a URL-friendly format
+                return ProductName?.ToLower().Replace(" ", "-").Replace(".", "");
+            }
+        }
     }
 }

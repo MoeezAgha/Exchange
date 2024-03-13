@@ -4,6 +4,7 @@ using Exchange.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Exchange.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240313232943_Updated-exchange")]
+    partial class Updatedexchange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,10 +271,10 @@ namespace Exchange.DAL.Migrations
                     b.Property<int?>("AcceptedOfferExchangeOfferId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("AcceptedOfferId")
+                    b.Property<int>("AcceptedOfferId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("CreatedBy")
@@ -570,7 +573,9 @@ namespace Exchange.DAL.Migrations
 
                     b.HasOne("Exchange.DAL.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Exchange.DAL.Models.ApplicationUser", "ProductCreatedByUser")
                         .WithMany("Products")

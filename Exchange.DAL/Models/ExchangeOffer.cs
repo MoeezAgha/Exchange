@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Exchange.DAL.Models
 {
-    //  [Table("ExchangeOffer", Schema = "Product")]
+    [Table("ExchangeOffer", Schema = "Product")]
     public class ExchangeOffer : IAuditable
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
