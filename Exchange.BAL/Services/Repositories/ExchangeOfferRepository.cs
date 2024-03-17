@@ -16,8 +16,8 @@ namespace Exchange.BAL.Services.Repositories
         public string GetEx() {
 
           var o=  _context.Products.Include(c => c.AcceptedOffer).Include(c => c.ExchangeOffers).ToList();
-
-          
+            var b = _context.ExchangeOffer.Where(c => c.ProductId != 0).ToList() ;
+            var z = _context.Products.Where(c => c.AcceptedOfferId != null);
             return "";
         }
 

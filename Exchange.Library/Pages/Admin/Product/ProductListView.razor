@@ -1,0 +1,83 @@
+﻿ @page "/products"
+
+@using Exchange.Library.ClinetHttpServices
+
+@inherits BarterBaseComponent<ProductListView>
+<RadzenButton ButtonType=ButtonType.Button ButtonStyle="ButtonStyle.Primary" Click="@CreateTag">Create Tag</RadzenButton>
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced"
+                AllowGrouping="true" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left"
+                Data="@_productDTOs" TItem="ProductDTO" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" ShowPagingSummary="true"
+                IsLoading=@isLoading Sort="@ShowLoading" Page="@ShowLoading" Group="@ShowLoading" Filter="@ShowLoading">
+    <Columns>
+        <RadzenDataGridColumn TItem="ProductDTO" Property="@nameof(ProductDTO.ProductId)" Title="@nameof(ProductDTO.ProductId)" />
+        <RadzenDataGridColumn TItem="ProductDTO" Property="@nameof(ProductDTO.ProductName)" Title="@nameof(ProductDTO.ProductName)" />
+        <RadzenDataGridColumn TItem="ProductDTO" Property="@nameof(ProductDTO.CreatedBy)" Title="@nameof(ProductDTO.CreatedBy)" />
+        <RadzenDataGridColumn TItem="ProductDTO" Property="@nameof(ProductDTO.IsPublic)" Title="@nameof(ProductDTO.IsPublic)" />
+        <RadzenDataGridColumn Frozen="true" TItem="ProductDTO" Title="@nameof(ProductDTO.IsPublic)" Sortable="true" TextAlign="TextAlign.Center">
+            <Template Context="data">
+                <div class="rz-p-12 rz-text-align-center">
+                    <RadzenCheckBox onclick="@(() => Publish(data))" @bind-Value=@data.IsPublic Name="CheckBox1" />
+                </div>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Frozen="true" TItem="ProductDTO" Title="@nameof(ProductDTO.ProductDescription)" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="data">
+                <RadzenCard>
+                    <RadzenTextArea Value="@data.ProductDescription" />
+                </RadzenCard>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ProductDTO" Context="true">
+            <Template Context="product">
+           
+                 <RadzenButton ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Secondary" Click="@(() => EditTag(product))">Edit</RadzenButton>
+             </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+
+
+@code {
+
+    bool isLoading = false;
+
+
+    public List<ProductDTO> _productDTOs = new List<ProductDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await ApplicationHttpClient.GetJsonAsync<List<ProductDTO>>("Product");
+
+        if (response.statusCode == HttpStatusCode.OK)
+        {
+            _productDTOs = response.Data;
+        }
+        StateHasChanged();
+    }
+
+    void EditTag(ProductDTO product)
+    {
+        _navigationManager.NavigateTo($"/product/{product.ProductId}");
+
+    }
+    void CreateTag()
+    {
+        _navigationManager.NavigateTo("product");
+    }
+    async Task ShowLoading()
+    {
+        isLoading = true;
+
+        await Task.Yield();
+
+        isLoading = false;
+    }
+    void Publish(ProductDTO tagId)
+    {
+        _navigationManager.NavigateTo($"/product/{tagId}");
+
+    }
+
+}

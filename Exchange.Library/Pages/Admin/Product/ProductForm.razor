@@ -1,0 +1,106 @@
+﻿@page "/product"
+@page "/product/{ProductId:int}"
+@using Exchange.DAL.Models
+@using Exchange.Library.ClinetHttpServices
+
+@inherits BarterBaseComponent<ProductListView>
+@inject HttpClient _http;
+<h3>Product Form</h3>
+
+<RadzenTemplateForm TItem="ProductDTO" Data="@productDTO" Submit="@OnSubmit">
+    <RadzenFieldset Text="Product Details">
+        <RadzenFormField Text="ProductName" Variant="Variant.Text" Style="width: 100%;">
+            <RadzenTextBox @bind-Value="productDTO.ProductName" Name="ProductName" Style="width:100%" Label="Product Name" Required="true"></RadzenTextBox>
+        </RadzenFormField>
+
+        <RadzenFormField Text="ProductDescription" Variant="Variant.Text" Style="width: 100%;">
+            <RadzenTextArea @bind-Value="productDTO.ProductDescription" Name="ProductDescription" Style="width:100%" Rows="3" Label="Product Description" Required="true"></RadzenTextArea>
+        </RadzenFormField>
+
+        <RadzenFormField Text="WantDescription" Variant="Variant.Text" Style="width: 100%;">
+            <RadzenTextArea @bind-Value="productDTO.WantDescription" Name="WantDescription" Style="width:100%" Rows="3" Label="Want Description"></RadzenTextArea>
+        </RadzenFormField>
+
+        <RadzenFormField Text="IsPublic" Variant="Variant.Text" Style="width: 100%;">
+            <RadzenCheckBox @bind-Value="productDTO.IsPublic" Name="IsPublic" Style="width:100%" Label="Is Public"></RadzenCheckBox>
+        </RadzenFormField>
+
+        <RadzenFormField Text="IsPublic" Variant="Variant.Text" Style="width: 100%;">
+            <RadzenDropDown Data="@categoryDTO" TextProperty="CategoryName" ValueProperty="CategoryId" @bind-Value="productDTO.CategoryId" Label="Category" Style="width:100%"></RadzenDropDown>
+        </RadzenFormField>
+
+        <RadzenFormField Text="IsPublic" Variant="Variant.Text" Style="width: 100%;">
+            <RadzenDropDown TValue="TagDTO" Data=@tagDTO TextProperty="@nameof(TagDTO.TagName)" Multiple=true Name="DropDownMultiple" Change="@OnChange" AllowClear=true Placeholder="Select Tags" Style="width: 100%; max-width: 400px;" />
+        </RadzenFormField>
+        
+        <RadzenButton ButtonType="ButtonType.Submit" Text="Submit" Style="margin-top: 20px"></RadzenButton>
+    </RadzenFieldset>
+</RadzenTemplateForm>
+
+
+<RadzenUpload Multiple="true" Url="@(ApplicationHttpClient.GetBaseUrl()+"Upload/MultipleUpload")" Progress=@(args => onProgress(args, "Multiple files upload")) class="w-100" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
+
+
+
+
+
+<RadzenStack AlignItems="AlignItems.Center" Class="rz-mx-auto rz-my-12">
+
+    <RadzenImage Path="images/community.svg" Style="width: 15rem;" AlternateText="community" />
+
+</RadzenStack>
+@code {
+
+    void OnChange(object value)
+    {
+        productDTO.Tags?.Clear();
+        var castedList = value as IEnumerable<TagDTO>;
+        if (castedList != null)
+        {
+
+            foreach (var item in castedList)
+            {
+                productDTO.Tags.Add(_mapper.Map<Tag>(item));
+            }
+        }
+
+    }
+    void onProgress(object value, string name)
+    {
+
+
+    }
+
+    [Parameter]
+    public int ProductId { get; set; }
+
+    public List<CategoryDTO> categoryDTO = new List<CategoryDTO>();
+    public List<TagDTO> tagDTO = new List<TagDTO>(); // Use the correct type (TagDTO) for tags
+    public IList<TagDTO> SelectedTagDTO = new List<TagDTO>();
+    public ProductDTO productDTO { get; set; } = new ProductDTO();
+
+    protected async override Task OnInitializedAsync()
+    {
+        var z = ApplicationHttpClient.GetBaseUrl() + "Upload/MultipleUpload";
+        await base.OnInitializedAsync();
+
+        // Fetch categories and tags before rendering the component
+        var responseCategory = await ApplicationHttpClient.GetJsonAsync<List<CategoryDTO>>("Category");
+        if (responseCategory.statusCode == HttpStatusCode.OK)
+        {
+            categoryDTO = responseCategory.Data;
+        }
+
+        var responseTag = await ApplicationHttpClient.GetJsonAsync<List<TagDTO>>("Tag");
+        if (responseTag.statusCode == HttpStatusCode.OK)
+        {
+            tagDTO = responseTag.Data;
+        }
+    }
+
+    private void OnSubmit(ProductDTO model)
+    {
+      
+
+    }
+}

@@ -61,6 +61,30 @@ builder.Services.AddHttpClient<ApplicationHttpClient>(client =>
     client.BaseAddress = new Uri("https://localhost:7271/api/");
 });
 
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowSpecificOrigin1",
+                      builder =>
+                      {
+                          builder.WithOrigins("https://localhost:7271") // Specify the origin of your Blazor app
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+});
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowSpecificOrigin",
+                      builder =>
+                      {
+                          builder.WithOrigins("https://localhost:7032") // Specify the origin of your Blazor app
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+});
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 //builder.Services.AddAutoMapper();
@@ -73,7 +97,9 @@ builder.Services.AddRegisterServicesUIExtensions();
 #endregion
 var app = builder.Build();
 
+app.UseCors("AllowSpecificOrigin");
 
+app.UseCors("AllowSpecificOrigin1");
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

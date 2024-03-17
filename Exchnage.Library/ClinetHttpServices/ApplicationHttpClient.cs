@@ -21,6 +21,13 @@ namespace Exchange.Library.ClinetHttpServices
             _ = GetTokenAsync();
         }
 
+        public string GetBaseUrl() {
+
+         return   _httpClient.BaseAddress.ToString();
+
+
+
+        }
         private async Task<string> GetTokenAsync()
         {
             

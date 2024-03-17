@@ -18,4 +18,19 @@ namespace Exchange.Library.DataTransferObject
         public DateTime ModifiedDate { get; set; } = DateTime.Now;
         public bool IsPublic { get; set; }
     }
+
+ 
+    public class TagDTOz
+    {
+
+        public int TagId { get; set; }
+
+        public string TagName { get; set; }
+
+        public string? CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? ModifiedBy { get; set; }
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
+        public bool IsPublic { get; set; }
+    }
 }

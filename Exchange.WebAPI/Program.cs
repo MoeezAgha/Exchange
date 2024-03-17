@@ -119,10 +119,30 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin1",
+        builder => builder.WithOrigins("https://localhost:7032")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
+});
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("https://localhost:7271")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
+});
 #endregion
 //builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 //builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
+//builder.Services.AddScoped(IWebHostEnvironment);
 #region Json setting
 
 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -156,6 +176,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowSpecificOrigin");
+
+app.UseCors("AllowSpecificOrigin1");
 //app.MapIdentityApi<ApplicationUser>();
 app.UseHttpsRedirection();
 
